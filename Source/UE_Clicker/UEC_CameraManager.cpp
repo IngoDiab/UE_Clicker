@@ -27,5 +27,7 @@ void AUEC_CameraManager::Tick(float DeltaTime)
 
 void AUEC_CameraManager::TestMethods()
 {
+	//Debug Log 
+	UE_LOG(LogTemp, Warning, TEXT("Test"));
 }
 
