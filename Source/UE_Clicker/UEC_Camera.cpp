@@ -19,6 +19,7 @@ void AUEC_Camera::BeginPlay()
 {
 	Super::BeginPlay();
 	TestCamera();
+	InitCamera();
 	
 }
 
@@ -26,7 +27,16 @@ void AUEC_Camera::BeginPlay()
 void AUEC_Camera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	MoveTo();
+}
 
+void AUEC_Camera::InitCamera()
+{
+	UActorComponent* _comp = GetComponentByClass(UUEC_CameraSettings::StaticClass());
+	if (!_comp) return;
+	cameraSettings = Cast<UUEC_CameraSettings>(_comp);
+	if (!cameraSettings)return;
+	UE_LOG(LogTemp, Warning, TEXT("%f"), cameraSettings->GetSpeedMove());
 }
 
 void AUEC_Camera::TestCamera()
@@ -42,6 +52,6 @@ void AUEC_Camera::TestCamera()
 
 void AUEC_Camera::MoveTo()
 {
-	UUEC_CameraSettings _settings = GetComponentByClass<UEC_CameraSettings>();
+	
 }
 

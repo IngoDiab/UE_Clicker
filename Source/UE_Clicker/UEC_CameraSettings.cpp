@@ -37,3 +37,23 @@ bool UUEC_CameraSettings::IsValid()
 	return target != nullptr;
 }
 
+FVector UUEC_CameraSettings::GetPosition()
+{
+	return offsetPos;
+}
+
+float UUEC_CameraSettings::GetSpeedMove()
+{
+	return speedMove;
+}
+
+FVector UUEC_CameraSettings::GetFocusPosition()
+{
+	return offsetLookAt;
+}
+
+float UUEC_CameraSettings::GetSpeedRotate()
+{
+	return LookAtMove;
+}
+
