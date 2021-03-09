@@ -4,13 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "UEC_Camera.h"
 #include "UEC_CameraManager.generated.h"
 
 UCLASS()
 class UE_CLICKER_API AUEC_CameraManager : public AActor
 {
 	GENERATED_BODY()
-	
+
+		UPROPERTY(EditAnywhere, Category = "All Cameras")
+		TMap<int, AUEC_Camera*> allCameras;
+
 public:	
 	// Sets default values for this actor's properties
 	AUEC_CameraManager();
@@ -24,5 +28,18 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	void TestMethods();
+	void Add(AUEC_Camera*);
+
+	AUEC_Camera* Get(int);
+
+	void Remove(int);
+	void Remove(AUEC_Camera*);
+
+	bool Exists(int);
+	bool Exists(AUEC_Camera*);
+
+	void Enable(int);
+
+	void Disable(int);
+	void DisableAll();
 };

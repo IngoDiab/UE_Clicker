@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Camera/CameraComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "DrawDebugHelpers.h"
 #include "UEC_CameraSettings.h"
 #include "UEC_Camera.generated.h"
 
@@ -12,8 +15,14 @@ class UE_CLICKER_API AUEC_Camera : public AActor
 {
 	GENERATED_BODY()
 
-		UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere)
+		int id = 0;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Settings")
 		UUEC_CameraSettings* cameraSettings = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+		UCameraComponent* cameraComp = nullptr;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -28,8 +37,29 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public :
+	//Initialisation of the camera
 	void InitCamera();
-	void TestCamera();
+	void InitCameraSettings();
+	void InitCameraComponent();
+
+	void AddToManager();
+
+	bool IsAtPos();
 	void MoveTo();
 
+	void LookAt();
+
+public:
+	FVector GetFinalPositionCamera();
+	FVector GetFinalLookAtCamera();
+
+public :
+	bool IsValid();
+
+	int GetID();
+	UUEC_CameraSettings* GetCameraSettings();
+	UCameraComponent* GetCameraComponent();
+
+public :
+	void DrawDebug();
 };

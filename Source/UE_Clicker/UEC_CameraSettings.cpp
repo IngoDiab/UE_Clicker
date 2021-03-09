@@ -37,6 +37,11 @@ bool UUEC_CameraSettings::IsValid()
 	return target != nullptr;
 }
 
+AActor* UUEC_CameraSettings::GetTarget()
+{
+	return target;
+}
+
 FVector UUEC_CameraSettings::GetPosition()
 {
 	return offsetPos;

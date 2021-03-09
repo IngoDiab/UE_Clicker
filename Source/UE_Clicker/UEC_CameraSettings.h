@@ -45,10 +45,11 @@ public:
 public:
 	bool IsValid();
 
+	AActor* GetTarget();
+
 	FVector GetPosition();
 	float GetSpeedMove();
 
 	FVector GetFocusPosition();
 	float GetSpeedRotate();
-
 };
