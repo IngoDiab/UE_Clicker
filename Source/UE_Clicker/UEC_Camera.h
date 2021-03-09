@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "UEC_CameraSettings.h"
 #include "UEC_Camera.generated.h"
@@ -23,6 +24,9 @@ class UE_CLICKER_API AUEC_Camera : public AActor
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 		UCameraComponent* cameraComp = nullptr;
+
+	DECLARE_EVENT(AUEC_Camera, CameraUpdate);
+	CameraUpdate onCameraUpdate;
 	
 public:	
 	// Sets default values for this actor's properties

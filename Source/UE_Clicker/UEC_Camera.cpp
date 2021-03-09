@@ -19,6 +19,13 @@ void AUEC_Camera::BeginPlay()
 {
 	Super::BeginPlay();
 	InitCamera();
+
+	onCameraUpdate.AddLambda([this]()
+	{
+		MoveTo();
+		LookAt();
+		DrawDebug();
+	});
 	
 }
 
@@ -26,9 +33,7 @@ void AUEC_Camera::BeginPlay()
 void AUEC_Camera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	MoveTo();
-	LookAt();
-	DrawDebug();
+	onCameraUpdate.Broadcast();
 }
 
 void AUEC_Camera::InitCamera()
@@ -73,19 +78,21 @@ bool AUEC_Camera::IsAtPos()
 
 void AUEC_Camera::MoveTo()
 {
-	if (IsAtPos() || !IsValid()) return;
+	if (!IsValid() || !cameraSettings->CanMove() || IsAtPos()) return;
 	SetActorLocation(UKismetMathLibrary::VLerp(GetActorLocation(), GetFinalPositionCamera(), GetWorld()->DeltaTimeSeconds*cameraSettings->GetSpeedMove()));
 }
 
 void AUEC_Camera::LookAt()
 {
-	UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetFinalLookAtCamera());
+	if (!IsValid() || !cameraSettings->CanLookAt()) return;
+	FRotator _newRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetFinalLookAtCamera());
+	SetActorRotation(UKismetMathLibrary::RInterpTo(GetActorRotation(), _newRotation, GetWorld()->DeltaTimeSeconds, cameraSettings->GetSpeedRotate()));
 }
 
 FVector AUEC_Camera::GetFinalPositionCamera()
 {
 	if (!IsValid()) return GetActorLocation();
-	FVector _offsetPos = cameraSettings->GetPosition();
+	FVector _offsetPos = cameraSettings->GetOffsetPosition();
 	FVector _pos = cameraSettings->GetTarget()->GetActorLocation() + FVector::ForwardVector * _offsetPos.X + FVector::RightVector * _offsetPos.Y + FVector::UpVector * _offsetPos.Z;
 	return _pos;
 }
@@ -93,7 +100,7 @@ FVector AUEC_Camera::GetFinalPositionCamera()
 FVector AUEC_Camera::GetFinalLookAtCamera()
 {
 	if (!IsValid()) return FVector();
-	FVector _offsetLookAt = cameraSettings->GetPosition();
+	FVector _offsetLookAt = cameraSettings->GetOffsetLookAt();
 	FVector _posLookAt = cameraSettings->GetTarget()->GetActorLocation() + FVector::ForwardVector * _offsetLookAt.X + FVector::RightVector * _offsetLookAt.Y + FVector::UpVector * _offsetLookAt.Z;
 	return _posLookAt;
 }
@@ -120,9 +127,11 @@ UCameraComponent* AUEC_Camera::GetCameraComponent()
 
 void AUEC_Camera::DrawDebug()
 {
+	//DEBUG POSITION CAMERA
 	DrawDebugSphere(GetWorld(), GetFinalPositionCamera(), 50, 100, FColor::Cyan, false, .1f, .1f);
 	DrawDebugLine(GetWorld(), GetFinalPositionCamera(), cameraSettings->GetTarget()->GetActorLocation(), FColor::Cyan, false, .1f, .1f);
 
+	//DEBUG LOOKAT CAMERA
 	DrawDebugSphere(GetWorld(), GetFinalLookAtCamera(), 50, 100, FColor::Red , false, .1f, .1f);
 	DrawDebugLine(GetWorld(), GetFinalLookAtCamera(), GetActorLocation(), FColor::Red, false, .1f, .1f);
 }

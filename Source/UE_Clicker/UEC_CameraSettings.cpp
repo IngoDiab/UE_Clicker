@@ -42,7 +42,7 @@ AActor* UUEC_CameraSettings::GetTarget()
 	return target;
 }
 
-FVector UUEC_CameraSettings::GetPosition()
+FVector UUEC_CameraSettings::GetOffsetPosition()
 {
 	return offsetPos;
 }
@@ -52,7 +52,12 @@ float UUEC_CameraSettings::GetSpeedMove()
 	return speedMove;
 }
 
-FVector UUEC_CameraSettings::GetFocusPosition()
+bool UUEC_CameraSettings::CanMove()
+{
+	return canMove;
+}
+
+FVector UUEC_CameraSettings::GetOffsetLookAt()
 {
 	return offsetLookAt;
 }
@@ -60,5 +65,10 @@ FVector UUEC_CameraSettings::GetFocusPosition()
 float UUEC_CameraSettings::GetSpeedRotate()
 {
 	return LookAtMove;
+}
+
+bool UUEC_CameraSettings::CanLookAt()
+{
+	return canLookAt;
 }
 
