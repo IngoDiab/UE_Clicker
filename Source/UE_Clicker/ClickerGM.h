@@ -14,7 +14,8 @@ UCLASS()
 class UE_CLICKER_API AClickerGM : public AGameModeBase
 {
 	GENERATED_BODY()
-		UPROPERTY(EditAnywhere)
+
+	UPROPERTY(EditAnywhere)
 		TSoftObjectPtr<AUEC_CameraManager> cameraManager = nullptr;
 
 public:

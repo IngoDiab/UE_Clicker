@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "UEC_Cursor.h"
 
 // Sets default values
@@ -15,6 +14,8 @@ AUEC_Cursor::AUEC_Cursor()
 void AUEC_Cursor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ShowCursor(true);
 	
 }
 
@@ -29,12 +30,28 @@ void AUEC_Cursor::Tick(float DeltaTime)
 void AUEC_Cursor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	UE_LOG(LogTemp, Warning, TEXT("Input"));
-	InputComponent->BindAction("SetMoveTarget", IE_Pressed, this, &AUEC_Cursor::TestInput);
+	InputComponent->BindAction("SetMoveTarget", IE_Pressed, this, &AUEC_Cursor::Click);
 }
 
-void AUEC_Cursor::TestInput()
+void AUEC_Cursor::ShowCursor(bool _show)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Click"));
+	APlayerController* _controller = GetWorld()->GetFirstPlayerController();
+	if (!_controller)return;
+	_controller->bShowMouseCursor = _show;
+}
+
+void AUEC_Cursor::Click()
+{
+	APlayerController* _controller = GetWorld()->GetFirstPlayerController();
+	if (!_controller)return;
+	FHitResult _hit;
+	_controller->GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, _hit);
+	lastClickPosition = _hit.Location;
+	UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), _hit.Location.X, _hit.Location.Y, _hit.Location.Z);
+}
+
+FVector AUEC_Cursor::GetLastClickPosition()
+{
+	return lastClickPosition;
 }
 

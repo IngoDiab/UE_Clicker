@@ -11,6 +11,9 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 {
 	GENERATED_BODY()
 
+		UPROPERTY(VisibleAnywhere)
+		FVector lastClickPosition = FVector::ZeroVector;
+
 public:
 	// Sets default values for this pawn's properties
 	AUEC_Cursor();
@@ -26,5 +29,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void TestInput();
+public:
+	void ShowCursor(bool);
+	void Click();
+
+public :
+	FVector GetLastClickPosition();
 };
