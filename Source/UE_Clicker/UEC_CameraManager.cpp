@@ -29,6 +29,15 @@ void AUEC_CameraManager::Add(AUEC_Camera* _camera)
 {
 	if (Exists(_camera->GetID())) return;
 	allCameras.Add(_camera->GetID(), _camera);
+//	onUpdateCameras.Add(_camera->OnCameraUpdate());
+//	onUpdateCameras.Add(_camera->MoveTo());
+/*	onUpdateCameras.AddLambda([this]()
+		{
+			MoveTo();
+			LookAt();
+			DrawDebug();
+		});
+		*/
 }
 
 AUEC_Camera* AUEC_CameraManager::Get(int _id)

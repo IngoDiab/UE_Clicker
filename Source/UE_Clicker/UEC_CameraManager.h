@@ -12,8 +12,11 @@ class UE_CLICKER_API AUEC_CameraManager : public AActor
 {
 	GENERATED_BODY()
 
-		UPROPERTY(EditAnywhere, Category = "All Cameras")
-		TMap<int, AUEC_Camera*> allCameras;
+	UPROPERTY(EditAnywhere, Category = "All Cameras")
+	TMap<int, AUEC_Camera*> allCameras;
+
+	DECLARE_EVENT(AUEC_CameraManager, UpdateCameras)
+	UpdateCameras onUpdateCameras;
 
 public:	
 	// Sets default values for this actor's properties

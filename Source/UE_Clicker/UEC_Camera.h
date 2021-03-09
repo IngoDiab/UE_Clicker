@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "UEC_CameraSettings.h"
 #include "UEC_Camera.generated.h"
@@ -25,7 +24,7 @@ class UE_CLICKER_API AUEC_Camera : public AActor
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 		UCameraComponent* cameraComp = nullptr;
 
-	DECLARE_EVENT(AUEC_Camera, CameraUpdate);
+	DECLARE_EVENT(AUEC_Camera, CameraUpdate)
 	CameraUpdate onCameraUpdate;
 	
 public:	
@@ -63,6 +62,7 @@ public :
 	int GetID();
 	UUEC_CameraSettings* GetCameraSettings();
 	UCameraComponent* GetCameraComponent();
+	FORCEINLINE CameraUpdate OnCameraUpdate() { return onCameraUpdate; };
 
 public :
 	void DrawDebug();
