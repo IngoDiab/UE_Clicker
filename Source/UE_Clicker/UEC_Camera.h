@@ -43,6 +43,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public :
+	class AUEC_CameraManager* GetCameraManager();
+
 	//Initialisation of the camera
 	void InitCamera();
 	void InitCameraSettings();

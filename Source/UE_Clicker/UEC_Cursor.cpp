@@ -4,12 +4,12 @@
 #include "ClickerGM.h"
 #include "Kismet/KismetMathLibrary.h"
 
+#pragma region UEMethods
 // Sets default values
 AUEC_Cursor::AUEC_Cursor()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -35,23 +35,50 @@ void AUEC_Cursor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComponent->BindAction("SetMoveTarget", IE_Pressed, this, &AUEC_Cursor::Click);
 }
 
-void AUEC_Cursor::EnablePlayerCamera()
+#pragma endregion
+
+#pragma region CustomMethods
+APlayerController* AUEC_Cursor::GetPlayerController()
+{
+	return GetWorld()->GetFirstPlayerController();
+}
+
+AUEC_CameraManager* AUEC_Cursor::GetCameraManager()
 {
 	AClickerGM* _gamemode = GetWorld()->GetAuthGameMode<AClickerGM>();
-	if (!_gamemode) return;
-	AUEC_CameraManager* _manager = _gamemode->GetCameraManager();
+	if (!_gamemode) return nullptr;
+	return _gamemode->GetCameraManager();
+}
+
+AUEC_FXManager* AUEC_Cursor::GetFXManager()
+{
+	AClickerGM* _gamemode = GetWorld()->GetAuthGameMode<AClickerGM>();
+	if (!_gamemode) return nullptr;
+	return _gamemode->GetFXManager();
+}
+
+void AUEC_Cursor::EnablePlayerCamera()
+{
+	//ENABLE THE PLAYER CAMERA
+	AUEC_CameraManager* _manager = GetCameraManager();
 	if (!_manager) return;
 	_manager->Enable(id);
 }
 
 void AUEC_Cursor::Click()
 {
-	APlayerController* _controller = GetWorld()->GetFirstPlayerController();
+	//GET POSITION TO GO
+	APlayerController* _controller = GetPlayerController();
 	if (!_controller)return;
 	FHitResult _hit;
 	_controller->GetHitResultUnderCursorForObjects(allObjectsHitable, true, _hit);
 	lastClickPosition = _hit.Location;
-	UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), _hit.Location.X, _hit.Location.Y, _hit.Location.Z);
+
+	//SET THE FX CURSOR TO THE POSITION TO GO
+	AUEC_FXManager* _fxManager = GetFXManager();
+	if (!_fxManager) return;
+	_fxManager->SetPosition(lastClickPosition);
+	_fxManager->Hide(false);
 }
 
 FVector AUEC_Cursor::GetLastClickPosition()
@@ -66,14 +93,25 @@ bool AUEC_Cursor::IsAtPos()
 
 void AUEC_Cursor::Move()
 {
-	if (!stats.canMove || IsAtPos()) return;
-	SetActorLocation(UKismetMathLibrary::VInterpTo(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
+	//HIDE FX CURSOR
+	if (!stats.canMove || IsAtPos())
+	{
+		AUEC_FXManager* _fxManager = GetFXManager();
+		if (!_fxManager) return;
+		_fxManager->Hide(true);
+	}
+
+	//MOVE THE PLAYER
+	else
+		SetActorLocation(UKismetMathLibrary::VInterpTo(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
 }
 
 void AUEC_Cursor::Rotate() 
 {
+	//ROTATE THE PLAYER IF HE CAN
 	if (!stats.canRotate || IsAtPos()) return;
 	FRotator _newRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), lastClickPosition);
 	SetActorRotation(UKismetMathLibrary::RInterpTo(GetActorRotation(), _newRotation, GetWorld()->DeltaTimeSeconds, stats.rotateSpeed));
 }
+#pragma endregion
 

@@ -58,6 +58,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
+	APlayerController* GetPlayerController();
+	class AUEC_CameraManager* GetCameraManager();
+	class AUEC_FXManager* GetFXManager();
+
 	void EnablePlayerCamera();
 	void Click();
 	bool IsAtPos();

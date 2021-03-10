@@ -6,6 +6,7 @@
 #include "UEC_CameraSettings.h"
 #include "ClickerGM.h"
 
+#pragma region UEMethods
 // Sets default values
 AUEC_Camera::AUEC_Camera()
 {
@@ -34,6 +35,15 @@ void AUEC_Camera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	//onCameraUpdate.Broadcast();
+}
+#pragma endregion
+
+#pragma region CustomMethods
+AUEC_CameraManager* AUEC_Camera::GetCameraManager()
+{
+	AClickerGM* _gamemode = GetWorld()->GetAuthGameMode<AClickerGM>();
+	if (!_gamemode) return nullptr;
+	return _gamemode->GetCameraManager();
 }
 
 void AUEC_Camera::InitCamera()
@@ -64,9 +74,7 @@ void AUEC_Camera::InitCameraComponent()
 
 void AUEC_Camera::AddToManager()
 {
-	AClickerGM* _gameMode = GetWorld()->GetAuthGameMode<AClickerGM>();
-	if (!_gameMode) return;
-	AUEC_CameraManager* _cameraManager = _gameMode->GetCameraManager();
+	AUEC_CameraManager* _cameraManager = GetCameraManager();
 	if (!_cameraManager) return;
 	_cameraManager->Add(this);
 }
@@ -137,4 +145,5 @@ void AUEC_Camera::DrawDebug()
 	DrawDebugSphere(GetWorld(), GetFinalLookAtCamera(), 50, 100, FColor::Red , false, .1f, .1f);
 	DrawDebugLine(GetWorld(), GetFinalLookAtCamera(), GetActorLocation(), FColor::Red, false, .1f, .1f);
 }
+#pragma endregion
 

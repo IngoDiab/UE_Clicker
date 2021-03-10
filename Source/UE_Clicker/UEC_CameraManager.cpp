@@ -3,6 +3,7 @@
 
 #include "UEC_CameraManager.h"
 
+#pragma region UEMethods
 // Sets default values
 AUEC_CameraManager::AUEC_CameraManager()
 {
@@ -25,7 +26,9 @@ void AUEC_CameraManager::Tick(float DeltaTime)
 	onUpdateCameras.Broadcast();
 
 }
+#pragma endregion
 
+#pragma region CustomMethods
 void AUEC_CameraManager::Add(AUEC_Camera* _camera)
 {
 	if (Exists(_camera->GetID())) return;
@@ -46,7 +49,6 @@ void AUEC_CameraManager::Remove(int _id)
 {
 	if (!Exists(_id)) return;
 	AUEC_Camera* _camera = Get(_id);
-	//onUpdateCameras.Remove(_camera->OnCameraUpdate().Broadcast());
 	allCameras.Remove(_id);
 }
 
@@ -102,3 +104,4 @@ void AUEC_CameraManager::DisableAll()
 			_camComp->Activate(false);
 	}
 }
+#pragma endregion

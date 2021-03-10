@@ -3,6 +3,7 @@
 
 #include "UEC_CameraSettings.h"
 
+#pragma region UEMethods
 // Sets default values for this component's properties
 UUEC_CameraSettings::UUEC_CameraSettings()
 {
@@ -31,7 +32,9 @@ void UUEC_CameraSettings::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 	// ...
 }
+#pragma endregion
 
+#pragma region CustomMethods
 bool UUEC_CameraSettings::IsValid()
 {
 	return target != nullptr;
@@ -71,4 +74,4 @@ bool UUEC_CameraSettings::CanLookAt()
 {
 	return canLookAt;
 }
-
+#pragma endregion
