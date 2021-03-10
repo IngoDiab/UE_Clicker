@@ -24,6 +24,9 @@ class UE_CLICKER_API AUEC_Camera : public AActor
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 		UCameraComponent* cameraComp = nullptr;
 
+	UPROPERTY(EditAnywhere, Category = "Debug")
+		bool canDraw = false;
+
 	DECLARE_EVENT(AUEC_Camera, CameraUpdate)
 	CameraUpdate onCameraUpdate;
 	

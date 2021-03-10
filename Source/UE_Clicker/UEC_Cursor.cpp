@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "UEC_Cursor.h"
+#include "ClickerGM.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AUEC_Cursor::AUEC_Cursor()
@@ -14,15 +16,15 @@ AUEC_Cursor::AUEC_Cursor()
 void AUEC_Cursor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	ShowCursor(true);
-	
+	EnablePlayerCamera();
+	lastClickPosition = GetActorLocation();
 }
 
 // Called every frame
 void AUEC_Cursor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	Move();
 
 }
 
@@ -33,11 +35,13 @@ void AUEC_Cursor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComponent->BindAction("SetMoveTarget", IE_Pressed, this, &AUEC_Cursor::Click);
 }
 
-void AUEC_Cursor::ShowCursor(bool _show)
+void AUEC_Cursor::EnablePlayerCamera()
 {
-	APlayerController* _controller = GetWorld()->GetFirstPlayerController();
-	if (!_controller)return;
-	_controller->bShowMouseCursor = _show;
+	AClickerGM* _gamemode = GetWorld()->GetAuthGameMode<AClickerGM>();
+	if (!_gamemode) return;
+	AUEC_CameraManager* _manager = _gamemode->GetCameraManager();
+	if (!_manager) return;
+	_manager->Enable(id);
 }
 
 void AUEC_Cursor::Click()
@@ -53,5 +57,16 @@ void AUEC_Cursor::Click()
 FVector AUEC_Cursor::GetLastClickPosition()
 {
 	return lastClickPosition;
+}
+
+bool AUEC_Cursor::IsAtPos()
+{
+	return FVector::Distance(GetActorLocation(), lastClickPosition) < 1;
+}
+
+void AUEC_Cursor::Move()
+{
+	if (!stats.canMove || IsAtPos()) return;
+	SetActorLocation(UKismetMathLibrary::VLerp(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds * stats.moveSpeed));
 }
 

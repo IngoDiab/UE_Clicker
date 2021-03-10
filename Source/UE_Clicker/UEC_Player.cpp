@@ -2,7 +2,6 @@
 
 
 #include "UEC_Player.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Components/ActorComponent.h"
 
 // Sets default values
@@ -17,38 +16,33 @@ AUEC_Player::AUEC_Player()
 void AUEC_Player::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//TOCHANGE
-	APlayerController* _controller = GetWorld()->GetFirstPlayerController();
-	if (!_controller)return;
-	UE_LOG(LogTemp, Warning, TEXT("tg1"));
-	APawn* _pawn = _controller->GetPawn();
-	if (!_pawn)return;
-	UE_LOG(LogTemp, Warning, TEXT("tg2"));
-	cursor = Cast<AUEC_Cursor>(_pawn);
 }
 
 // Called every frame
 void AUEC_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Move();
+	//Move();
+}
 
+void AUEC_Player::SetTargetPosition(FVector _position)
+{
+	targetPosition = _position;
 }
 
 bool AUEC_Player::IsAtPos()
 {
-	return FVector::Distance(GetActorLocation(), cursor->GetLastClickPosition()) < 1;
+	return FVector::Distance(GetActorLocation(),targetPosition) < 1;
 }
 
 void AUEC_Player::Move()
 {
-	if (!IsValid() || !stats.canMove || IsAtPos()) return;
-	UE_LOG(LogTemp, Warning, TEXT("tg"));
-	SetActorLocation(UKismetMathLibrary::VLerp(GetActorLocation(), cursor->GetLastClickPosition(), GetWorld()->DeltaTimeSeconds * stats.moveSpeed));
+	if (IsAtPos()) return;
+	//SetActorLocation(UKismetMathLibrary::VLerp(GetActorLocation(), targetPosition, GetWorld()->DeltaTimeSeconds));
 }
 
 bool AUEC_Player::IsValid() 
 {
-	return cursor!=nullptr;
+	return true;
+	//return cursor!=nullptr;
 }

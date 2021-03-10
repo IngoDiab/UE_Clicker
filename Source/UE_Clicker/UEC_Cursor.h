@@ -4,14 +4,33 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "UEC_Player.h"
 #include "UEC_Cursor.generated.h"
+
+USTRUCT()
+struct UE_CLICKER_API FPlayerStats
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+		float moveSpeed = 1;
+
+	UPROPERTY(EditAnywhere)
+		bool canMove = true;
+};
 
 UCLASS()
 class UE_CLICKER_API AUEC_Cursor : public APawn
 {
 	GENERATED_BODY()
 
-		UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
+		int id = 0;
+	
+	UPROPERTY(EditAnywhere)
+		FPlayerStats stats;
+
+	UPROPERTY(VisibleAnywhere)
 		FVector lastClickPosition = FVector::ZeroVector;
 
 public:
@@ -30,8 +49,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
-	void ShowCursor(bool);
+	void EnablePlayerCamera();
 	void Click();
+	bool IsAtPos();
+	void Move();
 
 public :
 	FVector GetLastClickPosition();

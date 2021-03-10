@@ -33,7 +33,7 @@ void AUEC_Camera::BeginPlay()
 void AUEC_Camera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	onCameraUpdate.Broadcast();
+	//onCameraUpdate.Broadcast();
 }
 
 void AUEC_Camera::InitCamera()
@@ -107,7 +107,7 @@ FVector AUEC_Camera::GetFinalLookAtCamera()
 
 bool AUEC_Camera::IsValid()
 {
-	return cameraSettings && cameraComp;
+	return cameraSettings && cameraComp && cameraSettings->IsValid();
 }
 
 int AUEC_Camera::GetID()
@@ -127,6 +127,8 @@ UCameraComponent* AUEC_Camera::GetCameraComponent()
 
 void AUEC_Camera::DrawDebug()
 {
+	if (!IsValid() || !canDraw)return;
+
 	//DEBUG POSITION CAMERA
 	DrawDebugSphere(GetWorld(), GetFinalPositionCamera(), 50, 100, FColor::Cyan, false, .1f, .1f);
 	DrawDebugLine(GetWorld(), GetFinalPositionCamera(), cameraSettings->GetTarget()->GetActorLocation(), FColor::Cyan, false, .1f, .1f);

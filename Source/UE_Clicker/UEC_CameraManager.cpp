@@ -22,6 +22,7 @@ void AUEC_CameraManager::BeginPlay()
 void AUEC_CameraManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	onUpdateCameras.Broadcast();
 
 }
 
@@ -29,15 +30,10 @@ void AUEC_CameraManager::Add(AUEC_Camera* _camera)
 {
 	if (Exists(_camera->GetID())) return;
 	allCameras.Add(_camera->GetID(), _camera);
-//	onUpdateCameras.Add(_camera->OnCameraUpdate());
-//	onUpdateCameras.Add(_camera->MoveTo());
-/*	onUpdateCameras.AddLambda([this]()
-		{
-			MoveTo();
-			LookAt();
-			DrawDebug();
-		});
-		*/
+	onUpdateCameras.AddLambda([_camera]()
+	{
+		_camera->OnCameraUpdate().Broadcast();
+	});
 }
 
 AUEC_Camera* AUEC_CameraManager::Get(int _id)
@@ -49,6 +45,8 @@ AUEC_Camera* AUEC_CameraManager::Get(int _id)
 void AUEC_CameraManager::Remove(int _id)
 {
 	if (!Exists(_id)) return;
+	AUEC_Camera* _camera = Get(_id);
+	//onUpdateCameras.Remove(_camera->OnCameraUpdate().Broadcast());
 	allCameras.Remove(_id);
 }
 
@@ -70,10 +68,18 @@ bool AUEC_CameraManager::Exists(AUEC_Camera* _camera)
 
 void AUEC_CameraManager::Enable(int _id)
 {
+	//GET THE CAMERA
 	AUEC_Camera* _camera = Get(_id);
 	if (!_camera) return;
+	
+	//DEFINE THE CAMERA AS THE NEW VIEW TARGET
+	APlayerController* _controller = GetWorld()->GetFirstPlayerController();
+	if (!_controller)return;
+	_controller->SetViewTarget(_camera);
+
 	UCameraComponent* _camComp = _camera->GetCameraComponent();
 	if (!_camComp) return;
+	//DISABLE ALL AND ACTIVATE THE CHOOSEN
 	DisableAll();
 	_camComp->Activate(true);
 }

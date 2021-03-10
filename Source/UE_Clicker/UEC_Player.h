@@ -4,31 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "UEC_Cursor.h"
 #include "UEC_Player.generated.h"
-
-USTRUCT()
-struct UE_CLICKER_API FPlayerStats 
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere)
-		float moveSpeed = 0;
-
-	UPROPERTY(EditAnywhere)
-		bool canMove = true;
-};
 
 UCLASS()
 class UE_CLICKER_API AUEC_Player : public AActor
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
-		FPlayerStats stats;
 
-	UPROPERTY()
-		AUEC_Cursor* cursor;
+	
+	UPROPERTY(VisibleAnywhere)
+		FVector targetPosition;
+
+	/*UPROPERTY()
+		AUEC_Cursor* cursor;*/
 	
 public:	
 	// Sets default values for this actor's properties
@@ -43,6 +32,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public :
+	void SetTargetPosition(FVector _position);
 	bool IsAtPos();
 	void Move();
 
