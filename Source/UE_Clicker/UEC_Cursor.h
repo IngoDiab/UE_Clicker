@@ -17,6 +17,12 @@ struct UE_CLICKER_API FPlayerStats
 
 	UPROPERTY(EditAnywhere)
 		bool canMove = true;
+
+	UPROPERTY(EditAnywhere)
+		float rotateSpeed = 1;
+
+	UPROPERTY(EditAnywhere)
+		bool canRotate = true;
 };
 
 UCLASS()
@@ -32,6 +38,9 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 
 	UPROPERTY(VisibleAnywhere)
 		FVector lastClickPosition = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere)
+		TArray<TEnumAsByte<EObjectTypeQuery>> allObjectsHitable;
 
 public:
 	// Sets default values for this pawn's properties
@@ -53,6 +62,8 @@ public:
 	void Click();
 	bool IsAtPos();
 	void Move();
+
+	void Rotate();
 
 public :
 	FVector GetLastClickPosition();

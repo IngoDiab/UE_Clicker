@@ -25,7 +25,7 @@ void AUEC_Cursor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	Move();
-
+	Rotate();
 }
 
 // Called to bind functionality to input
@@ -49,7 +49,7 @@ void AUEC_Cursor::Click()
 	APlayerController* _controller = GetWorld()->GetFirstPlayerController();
 	if (!_controller)return;
 	FHitResult _hit;
-	_controller->GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, _hit);
+	_controller->GetHitResultUnderCursorForObjects(allObjectsHitable, true, _hit);
 	lastClickPosition = _hit.Location;
 	UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), _hit.Location.X, _hit.Location.Y, _hit.Location.Z);
 }
@@ -67,6 +67,13 @@ bool AUEC_Cursor::IsAtPos()
 void AUEC_Cursor::Move()
 {
 	if (!stats.canMove || IsAtPos()) return;
-	SetActorLocation(UKismetMathLibrary::VLerp(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds * stats.moveSpeed));
+	SetActorLocation(UKismetMathLibrary::VInterpTo(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
+}
+
+void AUEC_Cursor::Rotate() 
+{
+	if (!stats.canRotate || IsAtPos()) return;
+	FRotator _newRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), lastClickPosition);
+	SetActorRotation(UKismetMathLibrary::RInterpTo(GetActorRotation(), _newRotation, GetWorld()->DeltaTimeSeconds, stats.rotateSpeed));
 }
 
