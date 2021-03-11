@@ -23,14 +23,15 @@ void AUEC_Cursor::BeginPlay()
 void AUEC_Cursor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Move();
-	Rotate();
+	onPlayerUpdate.Broadcast();
 }
 
 // Called to bind functionality to input
 void AUEC_Cursor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	//SETMOVETARGET BUTTON => CLICK METHOD
 	InputComponent->BindAction("SetMoveTarget", IE_Pressed, this, &AUEC_Cursor::Click);
 }
 
@@ -58,20 +59,40 @@ AUEC_FXManager* AUEC_Cursor::GetFXManager()
 
 void AUEC_Cursor::InitPlayer()
 {
+	//INITIALIZE POSITION TO GO TO ACTUAL POSITION
 	lastClickPosition = GetActorLocation();
+
+	//CREATE PLAYER CAMERA
 	CreatePlayerCamera();
-	EnablePlayerCamera();
+	//EnablePlayerCamera();
+
+	//ADD MOVE & ROTATE TO UPDATE EVENT
+	onPlayerUpdate.AddLambda([this]() 
+		{
+			Move();
+			Rotate();
+		});
 }
 
 void AUEC_Cursor::CreatePlayerCamera()
 {
+	//GET CAMERA MANAGER
 	AUEC_CameraManager* _manager = GetCameraManager();
 	if (!_manager) return;
 
+	//CREATE WANTED SETTINGS
 	FCameraSettings _settings;
 	_settings.target = this;
 	_settings.offsetPos = FVector(-460, -10, 680);
-	_manager->CreateCamera(id, _settings);
+
+	//CREATE CAMERA WITH PLAYER ID & WANTED SETTINGS
+	AUEC_Camera* _camera = _manager->CreateCamera(id, _settings);
+
+	//!\TODO COROUTINE
+	APlayerController* _controller = GetPlayerController();
+	if (!_controller) return;
+	_controller->SetViewTarget(_camera);
+	//!\TODO COROUTINE
 }
 
 void AUEC_Cursor::EnablePlayerCamera()
@@ -88,7 +109,8 @@ void AUEC_Cursor::Click()
 	APlayerController* _controller = GetPlayerController();
 	if (!_controller)return;
 	FHitResult _hit;
-	_controller->GetHitResultUnderCursorForObjects(allObjectsHitable, true, _hit);
+	bool _hasHit = _controller->GetHitResultUnderCursorForObjects(allObjectsHitable, true, _hit);
+	if (!_hasHit) return;
 	lastClickPosition = _hit.Location;
 
 	//SET THE FX CURSOR TO THE POSITION TO GO
@@ -110,17 +132,19 @@ bool AUEC_Cursor::IsAtPos()
 
 void AUEC_Cursor::Move()
 {
+	if (!stats.canMove) return;
+
 	//HIDE FX CURSOR
-	if (!stats.canMove || IsAtPos())
+	if (IsAtPos())
 	{
 		AUEC_FXManager* _fxManager = GetFXManager();
 		if (!_fxManager) return;
 		_fxManager->Hide(true);
+		return;
 	}
 
 	//MOVE THE PLAYER
-	else
-		SetActorLocation(UKismetMathLibrary::VInterpTo(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
+	SetActorLocation(UKismetMathLibrary::VInterpTo(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
 }
 
 void AUEC_Cursor::Rotate() 

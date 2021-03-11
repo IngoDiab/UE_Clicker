@@ -42,6 +42,9 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 	UPROPERTY(EditAnywhere)
 		TArray<TEnumAsByte<EObjectTypeQuery>> allObjectsHitable;
 
+	DECLARE_EVENT(AUEC_Cursor, PlayerUpdate)
+	PlayerUpdate onPlayerUpdate;
+
 public:
 	// Sets default values for this pawn's properties
 	AUEC_Cursor();

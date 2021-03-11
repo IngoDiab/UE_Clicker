@@ -16,8 +16,6 @@ AUEC_CameraManager::AUEC_CameraManager()
 void AUEC_CameraManager::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//CreateCamera(0, this);
 }
 
 // Called every frame
@@ -25,7 +23,6 @@ void AUEC_CameraManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	onUpdateCameras.Broadcast();
-
 }
 #pragma endregion
 
