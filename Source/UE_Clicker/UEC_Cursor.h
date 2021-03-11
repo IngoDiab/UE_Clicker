@@ -35,6 +35,9 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 	
 	UPROPERTY(EditAnywhere)
 		FPlayerStats stats;
+	
+	UPROPERTY(VisibleAnywhere)
+		class UPlayerAnimInstance* mecanim = nullptr;
 
 	UPROPERTY(VisibleAnywhere)
 		FVector lastClickPosition = FVector::ZeroVector;
@@ -66,6 +69,7 @@ public:
 	class AUEC_FXManager* GetFXManager();
 
 	void InitPlayer();
+	void InitMecanim();
 	void CreatePlayerCamera();
 	void EnablePlayerCamera();
 	void Click();

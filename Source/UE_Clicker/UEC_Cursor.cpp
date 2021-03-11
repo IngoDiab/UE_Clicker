@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "UEC_Cursor.h"
+#include "PlayerAnimInstance.h"
 #include "ClickerGM.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -62,6 +63,9 @@ void AUEC_Cursor::InitPlayer()
 	//INITIALIZE POSITION TO GO TO ACTUAL POSITION
 	lastClickPosition = GetActorLocation();
 
+	//GET THE MECANIM
+	InitMecanim();
+
 	//CREATE PLAYER CAMERA
 	CreatePlayerCamera();
 	//EnablePlayerCamera();
@@ -74,6 +78,13 @@ void AUEC_Cursor::InitPlayer()
 		});
 }
 
+void AUEC_Cursor::InitMecanim()
+{
+	USkeletalMeshComponent* _mesh = Cast<USkeletalMeshComponent>(GetComponentByClass(USkeletalMeshComponent::StaticClass()));
+	if (!_mesh) return;
+	mecanim = Cast<UPlayerAnimInstance>(_mesh->GetAnimInstance());
+}
+
 void AUEC_Cursor::CreatePlayerCamera()
 {
 	//GET CAMERA MANAGER
@@ -83,7 +94,7 @@ void AUEC_Cursor::CreatePlayerCamera()
 	//CREATE WANTED SETTINGS
 	FCameraSettings _settings;
 	_settings.target = this;
-	_settings.offsetPos = FVector(-460, -10, 680);
+	_settings.offsetPos = FVector(-460, -10, 500);
 
 	//CREATE CAMERA WITH PLAYER ID & WANTED SETTINGS
 	AUEC_Camera* _camera = _manager->CreateCamera(id, _settings);
@@ -137,6 +148,8 @@ void AUEC_Cursor::Move()
 	//HIDE FX CURSOR
 	if (IsAtPos())
 	{
+		if (!mecanim) return;
+		mecanim->inputRun = false;
 		AUEC_FXManager* _fxManager = GetFXManager();
 		if (!_fxManager) return;
 		_fxManager->Hide(true);
@@ -145,6 +158,8 @@ void AUEC_Cursor::Move()
 
 	//MOVE THE PLAYER
 	SetActorLocation(UKismetMathLibrary::VInterpTo(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
+	if (!mecanim) return;
+	mecanim->inputRun = true;
 }
 
 void AUEC_Cursor::Rotate() 
