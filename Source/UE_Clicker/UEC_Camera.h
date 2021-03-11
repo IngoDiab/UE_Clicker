@@ -10,6 +10,29 @@
 #include "UEC_CameraSettings.h"
 #include "UEC_Camera.generated.h"
 
+USTRUCT()
+struct UE_CLICKER_API FCameraSettings
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category = "Target")
+		AActor* target = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Movement|Position")
+		FVector offsetPos = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, Category = "Movement|Speed")
+		float speedMove = 10;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+		bool canMove = true;
+
+	UPROPERTY(EditAnywhere, Category = "Focus|Position")
+		FVector offsetLookAt = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, Category = "Focus|Speed")
+		float speedLookAt = 10;
+	UPROPERTY(EditAnywhere, Category = "LookAt")
+		bool canLookAt = true;
+};
+
 UCLASS()
 class UE_CLICKER_API AUEC_Camera : public AActor
 {
@@ -18,8 +41,8 @@ class UE_CLICKER_API AUEC_Camera : public AActor
 	UPROPERTY(EditAnywhere)
 		int id = 0;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Settings")
-		UUEC_CameraSettings* cameraSettings = nullptr;
+	UPROPERTY(EditAnywhere, Category = "Settings")
+		FCameraSettings cameraSettings;
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 		UCameraComponent* cameraComp = nullptr;
@@ -28,7 +51,7 @@ class UE_CLICKER_API AUEC_Camera : public AActor
 		bool canDraw = false;
 
 	DECLARE_EVENT(AUEC_Camera, CameraUpdate)
-	CameraUpdate onCameraUpdate;
+		CameraUpdate onCameraUpdate;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -47,7 +70,7 @@ public :
 
 	//Initialisation of the camera
 	void InitCamera();
-	void InitCameraSettings();
+	void InitCameraSettings(int _id, FCameraSettings& _settings);
 	void InitCameraComponent();
 
 	void AddToManager();
@@ -65,7 +88,8 @@ public :
 	bool IsValid();
 
 	int GetID();
-	UUEC_CameraSettings* GetCameraSettings();
+	FCameraSettings GetCameraSettings();
+	void SetCameraSettings(FCameraSettings);
 	UCameraComponent* GetCameraComponent();
 	FORCEINLINE CameraUpdate OnCameraUpdate() { return onCameraUpdate; };
 

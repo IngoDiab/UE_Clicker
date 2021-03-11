@@ -16,8 +16,7 @@ AUEC_Cursor::AUEC_Cursor()
 void AUEC_Cursor::BeginPlay()
 {
 	Super::BeginPlay();
-	EnablePlayerCamera();
-	lastClickPosition = GetActorLocation();
+	InitPlayer();
 }
 
 // Called every frame
@@ -55,6 +54,24 @@ AUEC_FXManager* AUEC_Cursor::GetFXManager()
 	AClickerGM* _gamemode = GetWorld()->GetAuthGameMode<AClickerGM>();
 	if (!_gamemode) return nullptr;
 	return _gamemode->GetFXManager();
+}
+
+void AUEC_Cursor::InitPlayer()
+{
+	lastClickPosition = GetActorLocation();
+	CreatePlayerCamera();
+	EnablePlayerCamera();
+}
+
+void AUEC_Cursor::CreatePlayerCamera()
+{
+	AUEC_CameraManager* _manager = GetCameraManager();
+	if (!_manager) return;
+
+	FCameraSettings _settings;
+	_settings.target = this;
+	_settings.offsetPos = FVector(-460, -10, 680);
+	_manager->CreateCamera(id, _settings);
 }
 
 void AUEC_Cursor::EnablePlayerCamera()

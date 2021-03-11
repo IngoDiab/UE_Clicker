@@ -25,7 +25,7 @@ class UE_CLICKER_API UUEC_CameraSettings : public UActorComponent
 	UPROPERTY(EditAnywhere, Category = "Focus|Position")
 		FVector offsetLookAt = FVector::ZeroVector;
 	UPROPERTY(EditAnywhere, Category = "Focus|Speed")
-		float LookAtMove = 0;
+		float speedLookAt = 0;
 	UPROPERTY(EditAnywhere, Category = "LookAt")
 		bool canLookAt = true;
 
@@ -54,4 +54,14 @@ public:
 	FVector GetOffsetLookAt();
 	float GetSpeedRotate();
 	bool CanLookAt();
+
+	void SetTarget(AActor*);
+
+	void SetOffsetPosition(FVector);
+	void SetSpeedMove(float);
+	void SetCanMove(bool);
+
+	void SetOffsetLookAt(FVector);
+	void SetSpeedRotate(float);
+	void SetCanLookAt(bool);
 };

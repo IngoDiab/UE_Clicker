@@ -16,7 +16,8 @@ AUEC_CameraManager::AUEC_CameraManager()
 void AUEC_CameraManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	//CreateCamera(0, this);
 }
 
 // Called every frame
@@ -58,6 +59,13 @@ void AUEC_CameraManager::Remove(AUEC_Camera* _camera)
 	allCameras.Remove(_camera->GetID());
 }
 
+AUEC_Camera* AUEC_CameraManager::CreateCamera(int _id, FCameraSettings& _settings)
+{
+	AUEC_Camera* _camera = GetWorld()->SpawnActor<AUEC_Camera>(cameraBP);
+	_camera->InitCameraSettings(_id, _settings);
+	return _camera;
+}
+
 bool AUEC_CameraManager::Exists(int _id)
 {
 	return allCameras.Contains(_id);
@@ -73,7 +81,7 @@ void AUEC_CameraManager::Enable(int _id)
 	//GET THE CAMERA
 	AUEC_Camera* _camera = Get(_id);
 	if (!_camera) return;
-	
+	UE_LOG(LogTemp, Warning, TEXT("aaa"));
 	//DEFINE THE CAMERA AS THE NEW VIEW TARGET
 	APlayerController* _controller = GetWorld()->GetFirstPlayerController();
 	if (!_controller)return;

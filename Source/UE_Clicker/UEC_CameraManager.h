@@ -15,6 +15,9 @@ class UE_CLICKER_API AUEC_CameraManager : public AActor
 	UPROPERTY(EditAnywhere, Category = "All Cameras")
 	TMap<int, AUEC_Camera*> allCameras;
 
+	UPROPERTY(EditAnywhere, Category = "Cameras BP")
+	TSubclassOf<AUEC_Camera> cameraBP = nullptr;
+
 	DECLARE_EVENT(AUEC_CameraManager, UpdateCameras)
 	UpdateCameras onUpdateCameras;
 
@@ -32,6 +35,7 @@ public:
 
 public:
 	void Add(AUEC_Camera*);
+	AUEC_Camera* CreateCamera(int, FCameraSettings&);
 
 	AUEC_Camera* Get(int);
 

@@ -34,7 +34,6 @@ void AUEC_Camera::BeginPlay()
 void AUEC_Camera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//onCameraUpdate.Broadcast();
 }
 #pragma endregion
 
@@ -51,18 +50,14 @@ void AUEC_Camera::InitCamera()
 	//Add camera to manager
 	AddToManager();
 
-	//Get Camera Settings
-	InitCameraSettings();
-
 	//Get Camera Component
 	InitCameraComponent();
 }
 
-void AUEC_Camera::InitCameraSettings()
+void AUEC_Camera::InitCameraSettings(int _id, FCameraSettings& _settings)
 {
-	UActorComponent* _comp = GetComponentByClass(UUEC_CameraSettings::StaticClass());
-	if (!_comp) return;
-	cameraSettings = Cast<UUEC_CameraSettings>(_comp);
+	id = _id;
+	cameraSettings = _settings;
 }
 
 void AUEC_Camera::InitCameraComponent()
@@ -86,36 +81,36 @@ bool AUEC_Camera::IsAtPos()
 
 void AUEC_Camera::MoveTo()
 {
-	if (!IsValid() || !cameraSettings->CanMove() || IsAtPos()) return;
-	SetActorLocation(UKismetMathLibrary::VLerp(GetActorLocation(), GetFinalPositionCamera(), GetWorld()->DeltaTimeSeconds*cameraSettings->GetSpeedMove()));
+	if (!IsValid() || !cameraSettings.canMove || IsAtPos()) return;
+	SetActorLocation(UKismetMathLibrary::VLerp(GetActorLocation(), GetFinalPositionCamera(), GetWorld()->DeltaTimeSeconds*cameraSettings.speedMove));
 }
 
 void AUEC_Camera::LookAt()
 {
-	if (!IsValid() || !cameraSettings->CanLookAt()) return;
+	if (!IsValid() || !cameraSettings.canLookAt) return;
 	FRotator _newRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetFinalLookAtCamera());
-	SetActorRotation(UKismetMathLibrary::RInterpTo(GetActorRotation(), _newRotation, GetWorld()->DeltaTimeSeconds, cameraSettings->GetSpeedRotate()));
+	SetActorRotation(UKismetMathLibrary::RInterpTo(GetActorRotation(), _newRotation, GetWorld()->DeltaTimeSeconds, cameraSettings.speedLookAt));
 }
 
 FVector AUEC_Camera::GetFinalPositionCamera()
 {
 	if (!IsValid()) return GetActorLocation();
-	FVector _offsetPos = cameraSettings->GetOffsetPosition();
-	FVector _pos = cameraSettings->GetTarget()->GetActorLocation() + FVector::ForwardVector * _offsetPos.X + FVector::RightVector * _offsetPos.Y + FVector::UpVector * _offsetPos.Z;
+	FVector _offsetPos = cameraSettings.offsetPos;
+	FVector _pos = cameraSettings.target->GetActorLocation() + FVector::ForwardVector * _offsetPos.X + FVector::RightVector * _offsetPos.Y + FVector::UpVector * _offsetPos.Z;
 	return _pos;
 }
 
 FVector AUEC_Camera::GetFinalLookAtCamera()
 {
 	if (!IsValid()) return FVector();
-	FVector _offsetLookAt = cameraSettings->GetOffsetLookAt();
-	FVector _posLookAt = cameraSettings->GetTarget()->GetActorLocation() + FVector::ForwardVector * _offsetLookAt.X + FVector::RightVector * _offsetLookAt.Y + FVector::UpVector * _offsetLookAt.Z;
+	FVector _offsetLookAt = cameraSettings.offsetLookAt;
+	FVector _posLookAt = cameraSettings.target->GetActorLocation() + FVector::ForwardVector * _offsetLookAt.X + FVector::RightVector * _offsetLookAt.Y + FVector::UpVector * _offsetLookAt.Z;
 	return _posLookAt;
 }
 
 bool AUEC_Camera::IsValid()
 {
-	return cameraSettings && cameraComp && cameraSettings->IsValid();
+	return cameraComp && cameraSettings.target != nullptr;
 }
 
 int AUEC_Camera::GetID()
@@ -123,9 +118,14 @@ int AUEC_Camera::GetID()
 	return id;
 }
 
-UUEC_CameraSettings* AUEC_Camera::GetCameraSettings()
+FCameraSettings AUEC_Camera::GetCameraSettings()
 {
 	return cameraSettings;
+}
+
+void AUEC_Camera::SetCameraSettings(FCameraSettings _settings)
+{
+	cameraSettings = _settings;
 }
 
 UCameraComponent* AUEC_Camera::GetCameraComponent()
@@ -139,7 +139,7 @@ void AUEC_Camera::DrawDebug()
 
 	//DEBUG POSITION CAMERA
 	DrawDebugSphere(GetWorld(), GetFinalPositionCamera(), 50, 100, FColor::Cyan, false, .1f, .1f);
-	DrawDebugLine(GetWorld(), GetFinalPositionCamera(), cameraSettings->GetTarget()->GetActorLocation(), FColor::Cyan, false, .1f, .1f);
+	DrawDebugLine(GetWorld(), GetFinalPositionCamera(), cameraSettings.target->GetActorLocation(), FColor::Cyan, false, .1f, .1f);
 
 	//DEBUG LOOKAT CAMERA
 	DrawDebugSphere(GetWorld(), GetFinalLookAtCamera(), 50, 100, FColor::Red , false, .1f, .1f);

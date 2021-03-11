@@ -62,6 +62,8 @@ public:
 	class AUEC_CameraManager* GetCameraManager();
 	class AUEC_FXManager* GetFXManager();
 
+	void InitPlayer();
+	void CreatePlayerCamera();
 	void EnablePlayerCamera();
 	void Click();
 	bool IsAtPos();

@@ -67,11 +67,39 @@ FVector UUEC_CameraSettings::GetOffsetLookAt()
 
 float UUEC_CameraSettings::GetSpeedRotate()
 {
-	return LookAtMove;
+	return speedLookAt;
 }
 
 bool UUEC_CameraSettings::CanLookAt()
 {
 	return canLookAt;
+}
+void UUEC_CameraSettings::SetTarget(AActor* _target)
+{
+	target = _target;
+}
+void UUEC_CameraSettings::SetOffsetPosition(FVector _pos)
+{
+	offsetPos = _pos;
+}
+void UUEC_CameraSettings::SetSpeedMove(float _speed)
+{
+	speedMove = _speed;
+}
+void UUEC_CameraSettings::SetCanMove(bool _can)
+{
+	canMove = _can;
+}
+void UUEC_CameraSettings::SetOffsetLookAt(FVector _pos)
+{
+	offsetLookAt = _pos;
+}
+void UUEC_CameraSettings::SetSpeedRotate(float _speed)
+{
+	speedLookAt = _speed;
+}
+void UUEC_CameraSettings::SetCanLookAt(bool _can)
+{
+	canLookAt = _can;
 }
 #pragma endregion
