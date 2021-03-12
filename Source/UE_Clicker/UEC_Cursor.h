@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "UEC_Player.h"
+#include "UEC_Camera.h"
 #include "UEC_Cursor.generated.h"
 
 USTRUCT()
@@ -33,20 +33,26 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 	UPROPERTY(EditAnywhere)
 		int id = 0;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Player Stats")
 		FPlayerStats stats;
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Own Camera Settings")
+		FCameraSettings ownCameraSettings;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Mecanim")
 		class UPlayerAnimInstance* mecanim = nullptr;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY()
 		FVector lastClickPosition = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "RayCast Parameters")
 		TArray<TEnumAsByte<EObjectTypeQuery>> allObjectsHitable;
 
 	DECLARE_EVENT(AUEC_Cursor, PlayerUpdate)
 	PlayerUpdate onPlayerUpdate;
+
+	DECLARE_EVENT(AUEC_Cursor, PlayerAtPos)
+	PlayerAtPos onPlayerAtPos;
 
 public:
 	// Sets default values for this pawn's properties
@@ -70,6 +76,7 @@ public:
 
 	void InitPlayer();
 	void InitMecanim();
+	//void RunAnimation(bool );
 	void CreatePlayerCamera();
 	void EnablePlayerCamera();
 	void Click();

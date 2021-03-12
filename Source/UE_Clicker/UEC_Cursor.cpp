@@ -91,13 +91,13 @@ void AUEC_Cursor::CreatePlayerCamera()
 	AUEC_CameraManager* _manager = GetCameraManager();
 	if (!_manager) return;
 
-	//CREATE WANTED SETTINGS
+	/*//CREATE WANTED SETTINGS
 	FCameraSettings _settings;
 	_settings.target = this;
-	_settings.offsetPos = FVector(-460, -10, 500);
+	_settings.offsetPos = FVector(-460, -10, 500);*/
 
 	//CREATE CAMERA WITH PLAYER ID & WANTED SETTINGS
-	AUEC_Camera* _camera = _manager->CreateCamera(id, _settings);
+	AUEC_Camera* _camera = _manager->CreateCamera(id, ownCameraSettings);
 
 	//!\TODO COROUTINE
 	APlayerController* _controller = GetPlayerController();
