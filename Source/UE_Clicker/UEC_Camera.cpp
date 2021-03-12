@@ -47,9 +47,6 @@ AUEC_CameraManager* AUEC_Camera::GetCameraManager()
 
 void AUEC_Camera::InitCamera()
 {
-	//Add camera to manager
-	AddToManager();
-
 	//Get Camera Component
 	InitCameraComponent();
 }
@@ -58,6 +55,9 @@ void AUEC_Camera::InitCameraSettings(int _id, FCameraSettings& _settings)
 {
 	id = _id;
 	cameraSettings = _settings;
+
+	//Add camera to manager
+	AddToManager();
 }
 
 void AUEC_Camera::InitCameraComponent()

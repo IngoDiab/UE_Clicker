@@ -45,6 +45,8 @@ public:
 	bool Exists(int);
 	bool Exists(AUEC_Camera*);
 
+	void ModifySettings(int, FCameraSettings&);
+
 	void Enable(int);
 
 	void Disable(int);

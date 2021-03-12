@@ -103,13 +103,12 @@ void AUEC_Cursor::CreatePlayerCamera()
 	if (!_manager) return;
 
 	//CREATE CAMERA WITH PLAYER ID & WANTED SETTINGS
-	AUEC_Camera* _camera = _manager->CreateCamera(id, ownCameraSettings);
+	AUEC_Camera* _camera = _manager->CreateCamera(id, ownCameraSettingsInside);
 
-	//!\TODO COROUTINE
+
 	APlayerController* _controller = GetPlayerController();
 	if (!_controller) return;
 	_controller->SetViewTarget(_camera);
-	//!\TODO COROUTINE
 }
 
 void AUEC_Cursor::EnablePlayerCamera()
@@ -151,6 +150,19 @@ void AUEC_Cursor::ShowFXDestination(bool _show)
 void AUEC_Cursor::ChangeInsideOutside()
 {
 	isInside = !isInside;
+	ModifyPlayerCamOffset();
+}
+
+void AUEC_Cursor::ModifyPlayerCamOffset()
+{
+	AUEC_CameraManager* _manager = GetCameraManager();
+	if (!_manager) return;
+	if (isInside) {
+		_manager->ModifySettings(id, ownCameraSettingsInside);
+	}
+	else {
+		_manager->ModifySettings(id, ownCameraSettingsOutside);
+	}
 }
 
 FVector AUEC_Cursor::GetLastClickPosition()

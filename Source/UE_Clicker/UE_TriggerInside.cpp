@@ -15,7 +15,6 @@ AUE_TriggerInside::AUE_TriggerInside()
 void AUE_TriggerInside::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("Begin"));
 }
 
 // Called every frame
@@ -27,9 +26,7 @@ void AUE_TriggerInside::Tick(float DeltaTime)
 
 void AUE_TriggerInside::OnActorEndOverlapMethod(AActor* OverlappedActor, AActor* OtherActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Actor Detected"));
 	AUEC_Cursor* _player = Cast<AUEC_Cursor>(OtherActor);
 	if (!_player) return;
-	UE_LOG(LogTemp, Warning, TEXT("Player Detected"));
 	_player->ChangeInsideOutside();
 }
