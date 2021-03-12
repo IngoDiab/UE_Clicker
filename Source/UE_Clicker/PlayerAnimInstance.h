@@ -14,8 +14,11 @@ class UE_CLICKER_API UPlayerAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 
-public:
+protected:
 		UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool inputRun = false;
 	
+public :
+	FORCEINLINE bool GetInputRun() { return inputRun; };
+	FORCEINLINE void SetInputRun(bool _inputRun) { inputRun = _inputRun; };
 };

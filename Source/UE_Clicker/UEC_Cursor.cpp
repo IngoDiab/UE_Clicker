@@ -76,6 +76,17 @@ void AUEC_Cursor::InitPlayer()
 		Move();
 		Rotate();
 	});
+
+	onPlayerAtPos.AddLambda([this]()
+	{
+		IDLEtoRUN(false);
+		ShowFXDestination(false);
+	});
+
+	onPlayerMoving.AddLambda([this]()
+	{
+		IDLEtoRUN(true);
+	});
 }
 
 void AUEC_Cursor::InitMecanim()
@@ -156,23 +167,22 @@ void AUEC_Cursor::Move()
 {
 	if (!stats.canMove) return;
 
-	//HIDE FX CURSOR
+	//HIDE FX CURSOR && STOP ANIM RUN
 	if (IsAtPos())
 	{
-		IDLEtoRUN(false);
-		ShowFXDestination(false);
+		onPlayerAtPos.Broadcast();
 		return;
 	}
 
 	//MOVE THE PLAYER
 	SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
-	IDLEtoRUN(true);
+	onPlayerMoving.Broadcast();
 }
 
 void AUEC_Cursor::IDLEtoRUN(bool _isRunning)
 {
 	if (!mecanim) return;
-	mecanim->inputRun = _isRunning;
+	mecanim->SetInputRun(_isRunning);
 }
 
 void AUEC_Cursor::Rotate() 

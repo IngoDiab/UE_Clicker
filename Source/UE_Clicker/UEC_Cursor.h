@@ -51,11 +51,15 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 	UPROPERTY(EditAnywhere, Category = "RayCast Parameters")
 		TArray<TEnumAsByte<EObjectTypeQuery>> allObjectsHitable;
 
+
 	DECLARE_EVENT(AUEC_Cursor, PlayerUpdate)
 	PlayerUpdate onPlayerUpdate;
 
 	DECLARE_EVENT(AUEC_Cursor, PlayerAtPos)
 	PlayerAtPos onPlayerAtPos;
+
+	DECLARE_EVENT(AUEC_Cursor, PlayerMoving)
+	PlayerMoving onPlayerMoving;
 
 public:
 	// Sets default values for this pawn's properties
