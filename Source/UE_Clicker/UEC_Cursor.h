@@ -30,9 +30,12 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Player Feedback")
 		int id = 0;
 	
+	UPROPERTY(VisibleAnywhere, Category = "Player Feedback")
+		bool isInside = true;
+
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 		FPlayerStats stats;
 	
@@ -76,15 +79,18 @@ public:
 
 	void InitPlayer();
 	void InitMecanim();
-	//void RunAnimation(bool );
 	void CreatePlayerCamera();
 	void EnablePlayerCamera();
 	void Click();
+	void SpawnFXOnClick();
+	void ShowFXDestination(bool);
 	bool IsAtPos();
 	void Move();
+	void IDLEtoRUN(bool);
 
 	void Rotate();
 
 public :
+	void ChangeInsideOutside();
 	FVector GetLastClickPosition();
 };

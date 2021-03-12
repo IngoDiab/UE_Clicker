@@ -72,10 +72,10 @@ void AUEC_Cursor::InitPlayer()
 
 	//ADD MOVE & ROTATE TO UPDATE EVENT
 	onPlayerUpdate.AddLambda([this]() 
-		{
-			Move();
-			Rotate();
-		});
+	{
+		Move();
+		Rotate();
+	});
 }
 
 void AUEC_Cursor::InitMecanim()
@@ -90,11 +90,6 @@ void AUEC_Cursor::CreatePlayerCamera()
 	//GET CAMERA MANAGER
 	AUEC_CameraManager* _manager = GetCameraManager();
 	if (!_manager) return;
-
-	/*//CREATE WANTED SETTINGS
-	FCameraSettings _settings;
-	_settings.target = this;
-	_settings.offsetPos = FVector(-460, -10, 500);*/
 
 	//CREATE CAMERA WITH PLAYER ID & WANTED SETTINGS
 	AUEC_Camera* _camera = _manager->CreateCamera(id, ownCameraSettings);
@@ -123,12 +118,28 @@ void AUEC_Cursor::Click()
 	bool _hasHit = _controller->GetHitResultUnderCursorForObjects(allObjectsHitable, true, _hit);
 	if (!_hasHit) return;
 	lastClickPosition = _hit.Location;
+	SpawnFXOnClick();
+}
 
+void AUEC_Cursor::SpawnFXOnClick()
+{
 	//SET THE FX CURSOR TO THE POSITION TO GO
 	AUEC_FXManager* _fxManager = GetFXManager();
 	if (!_fxManager) return;
 	_fxManager->SetPosition(lastClickPosition);
-	_fxManager->Hide(false);
+	ShowFXDestination(true);
+}
+
+void AUEC_Cursor::ShowFXDestination(bool _show)
+{
+	AUEC_FXManager* _fxManager = GetFXManager();
+	if (!_fxManager) return;
+	_fxManager->Hide(!_show);
+}
+
+void AUEC_Cursor::ChangeInsideOutside()
+{
+	isInside = !isInside;
 }
 
 FVector AUEC_Cursor::GetLastClickPosition()
@@ -148,18 +159,20 @@ void AUEC_Cursor::Move()
 	//HIDE FX CURSOR
 	if (IsAtPos())
 	{
-		if (!mecanim) return;
-		mecanim->inputRun = false;
-		AUEC_FXManager* _fxManager = GetFXManager();
-		if (!_fxManager) return;
-		_fxManager->Hide(true);
+		IDLEtoRUN(false);
+		ShowFXDestination(false);
 		return;
 	}
 
 	//MOVE THE PLAYER
-	SetActorLocation(UKismetMathLibrary::VInterpTo(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
+	SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
+	IDLEtoRUN(true);
+}
+
+void AUEC_Cursor::IDLEtoRUN(bool _isRunning)
+{
 	if (!mecanim) return;
-	mecanim->inputRun = true;
+	mecanim->inputRun = _isRunning;
 }
 
 void AUEC_Cursor::Rotate() 

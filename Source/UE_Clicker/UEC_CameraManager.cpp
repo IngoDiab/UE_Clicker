@@ -46,7 +46,6 @@ AUEC_Camera* AUEC_CameraManager::Get(int _id)
 void AUEC_CameraManager::Remove(int _id)
 {
 	if (!Exists(_id)) return;
-	AUEC_Camera* _camera = Get(_id);
 	allCameras.Remove(_id);
 }
 
@@ -78,7 +77,7 @@ void AUEC_CameraManager::Enable(int _id)
 	//GET THE CAMERA
 	AUEC_Camera* _camera = Get(_id);
 	if (!_camera) return;
-	UE_LOG(LogTemp, Warning, TEXT("aaa"));
+
 	//DEFINE THE CAMERA AS THE NEW VIEW TARGET
 	APlayerController* _controller = GetWorld()->GetFirstPlayerController();
 	if (!_controller)return;
