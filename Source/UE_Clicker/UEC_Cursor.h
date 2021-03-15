@@ -47,9 +47,12 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 	
 	UPROPERTY(VisibleAnywhere, Category = "SkeletalMesh")
 		class USkeletalMeshComponent* skeletalMesh = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Animator")
+		class UPlayerAnimInstance* animator = nullptr;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Collider")
-		class USphereComponent* sphereCollider = nullptr;
+		class UCapsuleComponent* capsuleCollider = nullptr;
 
 	UPROPERTY()
 		FVector lastClickPosition = FVector::ZeroVector;

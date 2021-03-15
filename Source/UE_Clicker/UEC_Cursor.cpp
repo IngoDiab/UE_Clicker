@@ -3,9 +3,12 @@
 #include "UEC_Cursor.h"
 #include "PlayerAnimInstance.h"
 #include "ClickerGM.h"
+#include "UEC_AIController.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 #pragma region UEMethods
 // Sets default values
@@ -15,10 +18,10 @@ AUEC_Cursor::AUEC_Cursor()
 	PrimaryActorTick.bCanEverTick = true;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	skeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
-	sphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Collider"));
+	capsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collider"));
 
 	skeletalMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	sphereCollider->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	capsuleCollider->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -82,7 +85,7 @@ void AUEC_Cursor::InitPlayer()
 	onPlayerUpdate.AddLambda([this]() 
 	{
 		Move();
-		Rotate();
+		//Rotate();
 	});
 
 	onPlayerAtPos.AddLambda([this]()
@@ -99,9 +102,8 @@ void AUEC_Cursor::InitPlayer()
 
 void AUEC_Cursor::InitMecanim()
 {
-	/*USkeletalMeshComponent* _mesh = Cast<USkeletalMeshComponent>(GetComponentByClass(USkeletalMeshComponent::StaticClass()));
-	if (!_mesh) return;
-	mecanim = Cast<UPlayerAnimInstance>(_mesh->GetAnimInstance());*/
+	if (!skeletalMesh) return;
+	animator = Cast<UPlayerAnimInstance>(skeletalMesh->GetAnimInstance());
 }
 
 void AUEC_Cursor::CreatePlayerCamera()
@@ -136,6 +138,18 @@ void AUEC_Cursor::Click()
 	bool _hasHit = _controller->GetHitResultUnderCursorForObjects(allObjectsHitable, true, _hit);
 	if (!_hasHit) return;
 	lastClickPosition = _hit.Location;
+
+
+	UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetPlayerController(), lastClickPosition);
+
+	//AController* _IA = _controller->GetPawn()->AIControllerClass.GetDefaultObject();
+	//if (!_IA) return;
+	//UE_LOG(LogTemp, Warning, TEXT("SALOPE"));
+	//AUEC_AIController* _iaContr = Cast<AUEC_AIController>(_IA);
+	//if (!_iaContr) return;
+	//UE_LOG(LogTemp, Warning, TEXT("SALOPE111"));
+	//_iaContr->SetTargetToGo(lastClickPosition);
+
 	SpawnFXOnClick();
 }
 
@@ -195,14 +209,14 @@ void AUEC_Cursor::Move()
 	}
 
 	//MOVE THE PLAYER
-	SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
-	onPlayerMoving.Broadcast();
+	//SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
+	//onPlayerMoving.Broadcast();
 }
 
 void AUEC_Cursor::IDLEtoRUN(bool _isRunning)
 {
-	if (!mecanim) return;
-	mecanim->SetInputRun(_isRunning);
+	if (!animator) return;
+	animator->SetInputRun(_isRunning);
 }
 
 void AUEC_Cursor::Rotate() 
