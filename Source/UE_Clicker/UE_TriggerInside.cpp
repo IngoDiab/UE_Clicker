@@ -8,6 +8,7 @@ AUE_TriggerInside::AUE_TriggerInside()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	OnActorEndOverlap.AddDynamic(this, &AUE_TriggerInside::OnActorEndOverlapMethod);
 }
 

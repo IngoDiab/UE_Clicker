@@ -45,8 +45,11 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 	UPROPERTY(EditAnywhere, Category = "Own Camera Settings | Outside")
 		FCameraSettings ownCameraSettingsOutside;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Mecanim")
-		class UPlayerAnimInstance* mecanim = nullptr;
+	UPROPERTY(VisibleAnywhere, Category = "SkeletalMesh")
+		class USkeletalMeshComponent* skeletalMesh = nullptr;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Collider")
+		class USphereComponent* sphereCollider = nullptr;
 
 	UPROPERTY()
 		FVector lastClickPosition = FVector::ZeroVector;

@@ -3,6 +3,8 @@
 #include "UEC_Cursor.h"
 #include "PlayerAnimInstance.h"
 #include "ClickerGM.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 #pragma region UEMethods
@@ -11,6 +13,12 @@ AUEC_Cursor::AUEC_Cursor()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	skeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
+	sphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Collider"));
+
+	skeletalMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	sphereCollider->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -91,9 +99,9 @@ void AUEC_Cursor::InitPlayer()
 
 void AUEC_Cursor::InitMecanim()
 {
-	USkeletalMeshComponent* _mesh = Cast<USkeletalMeshComponent>(GetComponentByClass(USkeletalMeshComponent::StaticClass()));
+	/*USkeletalMeshComponent* _mesh = Cast<USkeletalMeshComponent>(GetComponentByClass(USkeletalMeshComponent::StaticClass()));
 	if (!_mesh) return;
-	mecanim = Cast<UPlayerAnimInstance>(_mesh->GetAnimInstance());
+	mecanim = Cast<UPlayerAnimInstance>(_mesh->GetAnimInstance());*/
 }
 
 void AUEC_Cursor::CreatePlayerCamera()
