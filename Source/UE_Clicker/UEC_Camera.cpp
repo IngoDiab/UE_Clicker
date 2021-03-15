@@ -12,7 +12,9 @@ AUEC_Camera::AUEC_Camera()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	cameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	cameraComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -62,9 +64,9 @@ void AUEC_Camera::InitCameraSettings(int _id, FCameraSettings& _settings)
 
 void AUEC_Camera::InitCameraComponent()
 {
-	UActorComponent* _comp = GetComponentByClass(UCameraComponent::StaticClass());
-	if (!_comp) return;
-	cameraComp = Cast<UCameraComponent>(_comp);
+	//UActorComponent* _comp = GetComponentByClass(UCameraComponent::StaticClass());
+	//if (cameraComp) return;
+	//cameraComp = Cast<UCameraComponent>(_comp);
 }
 
 void AUEC_Camera::AddToManager()

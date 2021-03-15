@@ -39,10 +39,10 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 		FPlayerStats stats;
 	
-	UPROPERTY(EditAnywhere, Category = "Own Camera Settings (Inside)")
+	UPROPERTY(EditAnywhere, Category = "Own Camera Settings | Inside")
 		FCameraSettings ownCameraSettingsInside;
 	
-	UPROPERTY(EditAnywhere, Category = "Own Camera Settings (Outside)")
+	UPROPERTY(EditAnywhere, Category = "Own Camera Settings | Outside")
 		FCameraSettings ownCameraSettingsOutside;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Mecanim")
