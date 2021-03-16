@@ -28,19 +28,47 @@ struct UE_CLICKER_API FPlayerSettings
 		bool canRotate = true;
 };
 
+USTRUCT()
+struct UE_CLICKER_API FPlayerStats
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+		float life = 100;
+
+	UPROPERTY(EditAnywhere)
+		bool canHeal = true;
+
+	UPROPERTY(EditAnywhere)
+		float mana = 100;
+
+	UPROPERTY(EditAnywhere)
+		bool canMana = true;
+
+	UPROPERTY(EditAnywhere)
+		bool isDead = false;
+};
+
 UCLASS()
 class UE_CLICKER_API AUEC_Cursor : public APawn
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category = "Player Feedback")
+	UPROPERTY(EditAnywhere, Category = "Player | Feedback")
 		int id = 0;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Player Feedback")
+	UPROPERTY(EditAnywhere, Category = "Player | Feedback")
 		bool isInside = true;
 
-	UPROPERTY(EditAnywhere, Category = "Player Settings")
+	UPROPERTY(EditAnywhere, Category = "Player | Stats")
+		FPlayerStats stats;
+
+	UPROPERTY(EditAnywhere, Category = "Player | Settings")
 		FPlayerSettings settings;
+
+	UPROPERTY(EditAnywhere, Category = "Player | Inventory")
+		class UInventory* inventory = nullptr;
+
 	
 	UPROPERTY(EditAnywhere, Category = "Own Camera Settings | Inside")
 		FCameraSettings ownCameraSettingsInside;
@@ -48,24 +76,26 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 	UPROPERTY(EditAnywhere, Category = "Own Camera Settings | Outside")
 		FCameraSettings ownCameraSettingsOutside;
 
-	UPROPERTY(VisibleAnywhere, Category = "Movement")
+
+	UPROPERTY(VisibleAnywhere, Category = "PlayerComponent | Movement")
 		class UFloatingPawnMovement* movement = nullptr;
 	
-	UPROPERTY(VisibleAnywhere, Category = "SkeletalMesh")
+	UPROPERTY(VisibleAnywhere, Category = "PlayerComponent | SkeletalMesh")
 		class USkeletalMeshComponent* skeletalMesh = nullptr;
 
-	UPROPERTY(VisibleAnywhere, Category = "Animator")
+	UPROPERTY(VisibleAnywhere, Category = "PlayerComponent | Animator")
 		class UPlayerAnimInstance* animator = nullptr;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Collider")
+	UPROPERTY(VisibleAnywhere, Category = "PlayerComponent | Collider")
 		class UCapsuleComponent* capsuleCollider = nullptr;
 
-	UPROPERTY()
-		FVector lastClickPosition = FVector::ZeroVector;
 
 	UPROPERTY(EditAnywhere, Category = "RayCast Parameters")
 		TArray<TEnumAsByte<EObjectTypeQuery>> allObjectsHitable;
 
+
+	UPROPERTY()
+		FVector lastClickPosition = FVector::ZeroVector;
 
 	DECLARE_EVENT(AUEC_Cursor, PlayerUpdate)
 	PlayerUpdate onPlayerUpdate;

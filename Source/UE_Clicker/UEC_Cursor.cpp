@@ -3,6 +3,7 @@
 #include "UEC_Cursor.h"
 #include "PlayerAnimInstance.h"
 #include "ClickerGM.h"
+#include "Inventory.h"
 #include "UEC_AIController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -21,10 +22,12 @@ AUEC_Cursor::AUEC_Cursor()
 	skeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
 	capsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collider"));
 	movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
+	inventory = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
 
 	skeletalMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	capsuleCollider->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	AddOwnedComponent(movement);
+	AddOwnedComponent(inventory);
 }
 
 // Called when the game starts or when spawned
@@ -118,7 +121,7 @@ void AUEC_Cursor::CreatePlayerCamera()
 	if (!_manager) return;
 
 	//CREATE CAMERA WITH PLAYER ID & WANTED SETTINGS
-	AUEC_Camera* _camera = _manager->CreateCamera(id, ownCameraSettingsInside);
+	AUEC_Camera* _camera = _manager->CreateCamera(id, isInside? ownCameraSettingsInside : ownCameraSettingsOutside);
 
 
 	APlayerController* _controller = GetPlayerController();
@@ -138,12 +141,14 @@ void AUEC_Cursor::Click()
 {
 	//GET POSITION TO GO
 	APlayerController* _controller = GetPlayerController();
+	UE_LOG(LogTemp, Warning, TEXT("1111"));
+
 	if (!_controller)return;
 	FHitResult _hit;
 	bool _hasHit = _controller->GetHitResultUnderCursorForObjects(allObjectsHitable, true, _hit);
 	if (!_hasHit) return;
 	lastClickPosition = _hit.Location;
-
+	UE_LOG(LogTemp, Warning, TEXT("1111"));
 	if (!settings.canMove) return;
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetPlayerController(), lastClickPosition);
 
