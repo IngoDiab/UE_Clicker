@@ -33,23 +33,26 @@ void UInventory::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	// ...
 }
 
-void UInventory::Add(AUEC_ItemAbstract _item)
+void UInventory::Add(AUEC_ItemAbstract* _item)
 {
-	if (Exists(_item)) _item.IncreaseQuantity();
-	else allItems.Add(_item.GetID(), _item);
+	if (Exists(_item)) _item->IncreaseQuantity();
+	else
+	{
+		AUEC_ItemAbstract _itemInInventory = *_item;
+	}
 }
 
-AUEC_ItemAbstract UInventory::Get(int _id)
+AUEC_ItemAbstract* UInventory::Get(int _id)
 {
 	if (IsEmpty() || !Exists(_id)) return;
-	return allItems[_id];
+	return &allItems[_id];
 }
 
 void UInventory::Remove(int _id)
 {
 	if (IsEmpty() || !Exists(_id)) return;
-	AUEC_ItemAbstract _item = Get(_id);
-	if (!_item.IsUnique()) _item.DecreaseQuantity();
+	AUEC_ItemAbstract* _item = Get(_id);
+	if (!_item->IsUnique()) _item.DecreaseQuantity();
 	else allItems.Remove(_id);
 }
 
@@ -65,7 +68,7 @@ bool UInventory::Exists(int _id)
 	return allItems.Contains(_id);
 }
 
-bool UInventory::Exists(AUEC_ItemAbstract _item)
+bool UInventory::Exists(AUEC_ItemAbstract* _item)
 {
 	return allItems.Contains(_item.GetID());
 }

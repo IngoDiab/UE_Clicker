@@ -30,9 +30,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public :
-	void Add(AUEC_ItemAbstract);
+	void Add(AUEC_ItemAbstract*);
 
-	AUEC_ItemAbstract Get(int);
+	AUEC_ItemAbstract* Get(int);
 
 	void Remove(int);
 	void Remove(AUEC_ItemAbstract);
