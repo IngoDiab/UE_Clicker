@@ -5,6 +5,7 @@
 #include "ClickerGM.h"
 #include "UEC_AIController.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -19,9 +20,11 @@ AUEC_Cursor::AUEC_Cursor()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	skeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
 	capsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collider"));
+	movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
 
 	skeletalMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	capsuleCollider->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	AddOwnedComponent(movement);
 }
 
 // Called when the game starts or when spawned
@@ -84,19 +87,21 @@ void AUEC_Cursor::InitPlayer()
 	//ADD MOVE & ROTATE TO UPDATE EVENT
 	onPlayerUpdate.AddLambda([this]() 
 	{
-		Move();
-		//Rotate();
+		IDLEtoRUN();
+		//Move();
+		Rotate();
+		onPlayerAtPos.Broadcast();
 	});
 
 	onPlayerAtPos.AddLambda([this]()
 	{
-		IDLEtoRUN(false);
-		ShowFXDestination(false);
+		//IDLEtoRUN(false);
+		if(IsAtPos())ShowFXDestination(false);
 	});
 
 	onPlayerMoving.AddLambda([this]()
 	{
-		IDLEtoRUN(true);
+		//IDLEtoRUN(true);
 	});
 }
 
@@ -139,7 +144,7 @@ void AUEC_Cursor::Click()
 	if (!_hasHit) return;
 	lastClickPosition = _hit.Location;
 
-
+	if (!settings.canMove) return;
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetPlayerController(), lastClickPosition);
 
 	//AController* _IA = _controller->GetPawn()->AIControllerClass.GetDefaultObject();
@@ -194,37 +199,37 @@ FVector AUEC_Cursor::GetLastClickPosition()
 
 bool AUEC_Cursor::IsAtPos()
 {
-	return FVector::Distance(GetActorLocation(), lastClickPosition) < 1;
+	return FVector::Distance(GetActorLocation(), lastClickPosition) < settings.distanceIsAtPos;
 }
 
-void AUEC_Cursor::Move()
+/*void AUEC_Cursor::Move()
 {
 	if (!stats.canMove) return;
 
 	//HIDE FX CURSOR && STOP ANIM RUN
 	if (IsAtPos())
 	{
-		onPlayerAtPos.Broadcast();
+		//onPlayerAtPos.Broadcast();
 		return;
 	}
 
 	//MOVE THE PLAYER
 	//SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
 	//onPlayerMoving.Broadcast();
-}
+}*/
 
-void AUEC_Cursor::IDLEtoRUN(bool _isRunning)
+void AUEC_Cursor::IDLEtoRUN()
 {
 	if (!animator) return;
-	animator->SetInputRun(_isRunning);
+	animator->SetVelocity(movement->Velocity.Size());
 }
 
 void AUEC_Cursor::Rotate() 
 {
 	//ROTATE THE PLAYER IF HE CAN
-	if (!stats.canRotate || IsAtPos()) return;
+	if (!settings.canRotate || IsAtPos()) return;
 	FRotator _newRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), lastClickPosition);
-	SetActorRotation(UKismetMathLibrary::RInterpTo(GetActorRotation(), _newRotation, GetWorld()->DeltaTimeSeconds, stats.rotateSpeed));
+	SetActorRotation(UKismetMathLibrary::RInterpTo(GetActorRotation(), _newRotation, GetWorld()->DeltaTimeSeconds, settings.rotateSpeed));
 }
 #pragma endregion
 

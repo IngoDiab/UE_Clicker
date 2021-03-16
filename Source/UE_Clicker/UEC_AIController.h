@@ -25,7 +25,4 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-public:
-	void SetTargetToGo(FVector _pos);
 };

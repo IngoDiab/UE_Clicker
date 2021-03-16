@@ -16,9 +16,9 @@ class UE_CLICKER_API UPlayerAnimInstance : public UAnimInstance
 
 protected:
 		UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool inputRun = false;
+		float velocity = 0;
 	
 public :
-	FORCEINLINE bool GetInputRun() { return inputRun; };
-	FORCEINLINE void SetInputRun(bool _inputRun) { inputRun = _inputRun; };
+	FORCEINLINE float GetVelocity() { return velocity; };
+	FORCEINLINE void SetVelocity(float _velocity) { velocity = _velocity; };
 };

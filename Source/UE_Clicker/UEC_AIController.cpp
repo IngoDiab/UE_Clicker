@@ -22,9 +22,3 @@ void AUEC_AIController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
-void AUEC_AIController::SetTargetToGo(FVector _pos)
-{
-	MoveToLocation(_pos, .1f);
-	UE_LOG(LogTemp, Warning, TEXT("%f, %f, %f"), _pos.X, _pos.Y, _pos.Z);
-}

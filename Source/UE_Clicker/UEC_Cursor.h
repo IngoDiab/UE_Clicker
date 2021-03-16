@@ -8,7 +8,7 @@
 #include "UEC_Cursor.generated.h"
 
 USTRUCT()
-struct UE_CLICKER_API FPlayerStats
+struct UE_CLICKER_API FPlayerSettings
 {
 	GENERATED_BODY()
 
@@ -17,6 +17,9 @@ struct UE_CLICKER_API FPlayerStats
 
 	UPROPERTY(EditAnywhere)
 		bool canMove = true;
+
+	UPROPERTY(EditAnywhere)
+		float distanceIsAtPos = 10;
 
 	UPROPERTY(EditAnywhere)
 		float rotateSpeed = 1;
@@ -36,14 +39,17 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 	UPROPERTY(VisibleAnywhere, Category = "Player Feedback")
 		bool isInside = true;
 
-	UPROPERTY(EditAnywhere, Category = "Player Stats")
-		FPlayerStats stats;
+	UPROPERTY(EditAnywhere, Category = "Player Settings")
+		FPlayerSettings settings;
 	
 	UPROPERTY(EditAnywhere, Category = "Own Camera Settings | Inside")
 		FCameraSettings ownCameraSettingsInside;
 	
 	UPROPERTY(EditAnywhere, Category = "Own Camera Settings | Outside")
 		FCameraSettings ownCameraSettingsOutside;
+
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
+		class UFloatingPawnMovement* movement = nullptr;
 	
 	UPROPERTY(VisibleAnywhere, Category = "SkeletalMesh")
 		class USkeletalMeshComponent* skeletalMesh = nullptr;
@@ -98,8 +104,8 @@ public:
 	void SpawnFXOnClick();
 	void ShowFXDestination(bool);
 	bool IsAtPos();
-	void Move();
-	void IDLEtoRUN(bool);
+	//void Move();
+	void IDLEtoRUN();
 
 	void Rotate();
 
