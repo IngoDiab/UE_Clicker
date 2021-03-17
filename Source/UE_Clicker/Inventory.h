@@ -32,6 +32,7 @@ public:
 public :
 
 	void ShowInventory();
+	void UseItem(int _id);
 
 	void Add(AUEC_ItemAbstract*);
 

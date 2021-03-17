@@ -13,6 +13,9 @@ class UE_CLICKER_API AUEC_HealPotion : public AUEC_ItemAbstract
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
+		int amountHPRegen = 10;
+
+	UPROPERTY(EditAnywhere)
 		class USphereComponent* sphereTrigger = nullptr;
 	
 public:	
@@ -32,6 +35,8 @@ public:
 		void OnActorBeginOverlapMethod(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 public:
+	virtual void Move();
+
 	virtual void IncreaseQuantity() override;
 
 	virtual void DecreaseQuantity() override;

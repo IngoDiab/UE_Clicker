@@ -29,6 +29,7 @@ void AUEC_HealPotion::BeginPlay()
 void AUEC_HealPotion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	Move();
 }
 
 void AUEC_HealPotion::OnActorBeginOverlapMethod(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -37,9 +38,14 @@ void AUEC_HealPotion::OnActorBeginOverlapMethod(UPrimitiveComponent* OverlappedC
 	if (!_player) return;
 	AUEC_HealPotion* _potion = Cast<AUEC_HealPotion>(OverlappedComponent->GetOwner());
 	if (!_potion) return;
-	UE_LOG(LogTemp, Warning, TEXT("You found : Heal Potion x1"));
+	UE_LOG(LogTemp, Warning, TEXT("You found : Healing Potion x1"));
 	_player->AddInventory(_potion);
 	_potion->Destroy(true);
+}
+
+void AUEC_HealPotion::Move()
+{
+
 }
 
 void AUEC_HealPotion::IncreaseQuantity()
@@ -54,6 +60,10 @@ void AUEC_HealPotion::DecreaseQuantity()
 
 void AUEC_HealPotion::Use()
 {
-	UE_LOG(LogTemp, Warning, TEXT("You used : Heal Potion x1"));
+	UE_LOG(LogTemp, Warning, TEXT("You used : Healing Potion x1"));
+	APlayerController* _controller = GetPlayerController();
+	if (!_controller) return;
+	IITarget* _player = Cast<IITarget>(_controller->GetPawn());
+	_player->AddLife_Implementation(amountHPRegen);
 }
 

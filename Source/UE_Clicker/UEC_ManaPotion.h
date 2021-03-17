@@ -13,6 +13,9 @@ class UE_CLICKER_API AUEC_ManaPotion : public AUEC_ItemAbstract
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
+		int amountManaRegen = 5;
+
+	UPROPERTY(EditAnywhere)
 		class USphereComponent* sphereTrigger = nullptr;
 	
 public:	

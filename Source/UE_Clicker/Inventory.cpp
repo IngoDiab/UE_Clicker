@@ -42,6 +42,14 @@ void UInventory::ShowInventory()
 	}
 }
 
+void UInventory::UseItem(int _id)
+{
+	AUEC_ItemAbstract* _item = Get(_id);
+	if (!_item) return;
+	_item->Use();
+	Remove(_id);
+}
+
 void UInventory::Add(AUEC_ItemAbstract* _item)
 {
 	if (!Exists(_item)) 
@@ -67,8 +75,8 @@ void UInventory::Remove(int _id)
 {
 	if (IsEmpty() || !Exists(_id)) return;
 	AUEC_ItemAbstract* _item = Get(_id);
-	if (!_item->IsUnique()) _item->DecreaseQuantity();
-	else allItems.Remove(_id);
+	if (_item->IsUnique()) allItems.Remove(_id);
+	else _item->DecreaseQuantity();
 }
 
 void UInventory::Remove(AUEC_ItemAbstract* _item)

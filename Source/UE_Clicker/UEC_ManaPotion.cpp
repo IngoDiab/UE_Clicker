@@ -57,5 +57,9 @@ void AUEC_ManaPotion::DecreaseQuantity()
 void AUEC_ManaPotion::Use()
 {
 	UE_LOG(LogTemp, Warning, TEXT("You used : Mana Potion x1"));
+	APlayerController* _controller = GetPlayerController();
+	if (!_controller) return;
+	IITarget* _player = Cast<IITarget>(_controller->GetPawn());
+	_player->AddMana_Implementation(amountManaRegen);
 }
 

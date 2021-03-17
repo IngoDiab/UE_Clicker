@@ -53,6 +53,8 @@ void AUEC_Cursor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	//SETMOVETARGET BUTTON => CLICK METHOD
 	InputComponent->BindAction("SetMoveTarget", IE_Pressed, this, &AUEC_Cursor::Click);
+	InputComponent->BindAction("UseHealthPotion", IE_Pressed, this, &AUEC_Cursor::UseHealPotion);
+	InputComponent->BindAction("UseManaPotion", IE_Pressed, this, &AUEC_Cursor::UseManaPotion);
 }
 
 #pragma endregion
@@ -177,6 +179,18 @@ void AUEC_Cursor::ShowFXDestination(bool _show)
 	_fxManager->Hide(!_show);
 }
 
+void AUEC_Cursor::AddLife_Implementation(int _life)
+{
+	if (!stats.canHeal) return;
+	stats.life += _life;
+}
+
+void AUEC_Cursor::AddMana_Implementation(int _mana)
+{
+	if (!stats.canMana) return;
+	stats.mana += _mana;
+}
+
 void AUEC_Cursor::ChangeInsideOutside()
 {
 	isInside = !isInside;
@@ -214,6 +228,16 @@ void AUEC_Cursor::IDLEtoRUN()
 void AUEC_Cursor::AddInventory(AUEC_ItemAbstract* _item)
 {
 	inventory->Add(_item);
+}
+
+void AUEC_Cursor::UseHealPotion()
+{
+	inventory->UseItem(50);
+}
+
+void AUEC_Cursor::UseManaPotion()
+{
+	inventory->UseItem(51);
 }
 
 void AUEC_Cursor::Rotate() 

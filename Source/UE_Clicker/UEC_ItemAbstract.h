@@ -44,6 +44,11 @@ public:
 	FORCEINLINE FString GetName() { return name; };
 	FORCEINLINE int GetQuantity() { return quantity; };
 	FORCEINLINE bool IsUnique() { return quantity == 1; };
+
+	APlayerController* GetPlayerController();
+	class AUEC_CameraManager* GetCameraManager();
+	class AUEC_FXManager* GetFXManager();
+
 	virtual void IncreaseQuantity() PURE_VIRTUAL(AUEC_ItemAbstract::IncreaseQuantity, );
 	virtual void DecreaseQuantity() PURE_VIRTUAL(AUEC_ItemAbstract::DecreaseQuantity, );
 	virtual void Use() PURE_VIRTUAL(AUEC_ItemAbstract::Use, );

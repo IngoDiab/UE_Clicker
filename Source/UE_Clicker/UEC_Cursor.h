@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "UEC_Camera.h"
+#include "ITarget.h"
 #include "UEC_Cursor.generated.h"
 
 USTRUCT()
@@ -50,10 +51,11 @@ struct UE_CLICKER_API FPlayerStats
 };
 
 UCLASS()
-class UE_CLICKER_API AUEC_Cursor : public APawn
+class UE_CLICKER_API AUEC_Cursor : public APawn, public IITarget
 {
 	GENERATED_BODY()
 
+#pragma region Player
 	UPROPERTY(EditAnywhere, Category = "Player | Feedback")
 		int id = 0;
 	
@@ -68,15 +70,17 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 
 	UPROPERTY(EditAnywhere, Category = "Player | Inventory")
 		class UInventory* inventory = nullptr;
-
+#pragma endregion
 	
+#pragma region CamPreset
 	UPROPERTY(EditAnywhere, Category = "Own Camera Settings | Inside")
 		FCameraSettings ownCameraSettingsInside;
 	
 	UPROPERTY(EditAnywhere, Category = "Own Camera Settings | Outside")
 		FCameraSettings ownCameraSettingsOutside;
+#pragma endregion
 
-
+#pragma region Component
 	UPROPERTY(VisibleAnywhere, Category = "PlayerComponent | Movement")
 		class UFloatingPawnMovement* movement = nullptr;
 	
@@ -88,7 +92,7 @@ class UE_CLICKER_API AUEC_Cursor : public APawn
 	
 	UPROPERTY(VisibleAnywhere, Category = "PlayerComponent | Collider")
 		class UCapsuleComponent* capsuleCollider = nullptr;
-
+#pragma endregion
 
 	UPROPERTY(EditAnywhere, Category = "RayCast Parameters")
 		TArray<TEnumAsByte<EObjectTypeQuery>> allObjectsHitable;
@@ -137,8 +141,19 @@ public:
 	void IDLEtoRUN();
 
 	void AddInventory(class AUEC_ItemAbstract*);
+	void UseHealPotion();
+	void UseManaPotion();
 
 	void Rotate();
+
+public :
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void AddLife(int _life);
+	virtual void AddLife_Implementation(int _life);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void AddMana(int _mana);
+	virtual void AddMana_Implementation(int _mana);
 
 public :
 	void ChangeInsideOutside();
