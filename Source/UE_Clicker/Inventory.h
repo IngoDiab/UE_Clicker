@@ -12,8 +12,8 @@ class UE_CLICKER_API UInventory : public UActorComponent
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere, meta = (AllowAbstract = true))
-		TMap<int, class AUEC_ItemAbstract> allItems;
+	UPROPERTY(EditAnywhere, meta = (AllowAbstract = true))
+		TMap<int, class AUEC_ItemAbstract*> allItems;
 
 	UPROPERTY(EditAnywhere)
 		int maxSlots = 5;
@@ -30,15 +30,18 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public :
+
+	void ShowInventory();
+
 	void Add(AUEC_ItemAbstract*);
 
 	AUEC_ItemAbstract* Get(int);
 
 	void Remove(int);
-	void Remove(AUEC_ItemAbstract);
+	void Remove(AUEC_ItemAbstract*);
 
 	bool Exists(int);
-	bool Exists(AUEC_ItemAbstract);
+	bool Exists(AUEC_ItemAbstract*);
 
 	bool IsFull();
 	bool IsEmpty();

@@ -4,6 +4,8 @@
 #include "PlayerAnimInstance.h"
 #include "ClickerGM.h"
 #include "Inventory.h"
+//#include "UEC_ItemAbstract.h"
+//#include "UEC_HealPotion.h"
 #include "UEC_AIController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -91,7 +93,6 @@ void AUEC_Cursor::InitPlayer()
 	onPlayerUpdate.AddLambda([this]() 
 	{
 		IDLEtoRUN();
-		//Move();
 		Rotate();
 		onPlayerAtPos.Broadcast();
 	});
@@ -141,24 +142,21 @@ void AUEC_Cursor::Click()
 {
 	//GET POSITION TO GO
 	APlayerController* _controller = GetPlayerController();
-	UE_LOG(LogTemp, Warning, TEXT("1111"));
-
 	if (!_controller)return;
+
 	FHitResult _hit;
 	bool _hasHit = _controller->GetHitResultUnderCursorForObjects(allObjectsHitable, true, _hit);
 	if (!_hasHit) return;
+
 	lastClickPosition = _hit.Location;
-	UE_LOG(LogTemp, Warning, TEXT("1111"));
+
 	if (!settings.canMove) return;
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetPlayerController(), lastClickPosition);
 
-	//AController* _IA = _controller->GetPawn()->AIControllerClass.GetDefaultObject();
-	//if (!_IA) return;
-	//UE_LOG(LogTemp, Warning, TEXT("SALOPE"));
-	//AUEC_AIController* _iaContr = Cast<AUEC_AIController>(_IA);
-	//if (!_iaContr) return;
-	//UE_LOG(LogTemp, Warning, TEXT("SALOPE111"));
-	//_iaContr->SetTargetToGo(lastClickPosition);
+
+	/*AUEC_HealPotion* _potion = NewObject<AUEC_HealPotion>(this);
+	if(_potion)
+		inventory->Add(_potion);*/
 
 	SpawnFXOnClick();
 }
@@ -207,26 +205,15 @@ bool AUEC_Cursor::IsAtPos()
 	return FVector::Distance(GetActorLocation(), lastClickPosition) < settings.distanceIsAtPos;
 }
 
-/*void AUEC_Cursor::Move()
-{
-	if (!stats.canMove) return;
-
-	//HIDE FX CURSOR && STOP ANIM RUN
-	if (IsAtPos())
-	{
-		//onPlayerAtPos.Broadcast();
-		return;
-	}
-
-	//MOVE THE PLAYER
-	//SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), lastClickPosition, GetWorld()->DeltaTimeSeconds, stats.moveSpeed));
-	//onPlayerMoving.Broadcast();
-}*/
-
 void AUEC_Cursor::IDLEtoRUN()
 {
 	if (!animator) return;
 	animator->SetVelocity(movement->Velocity.Size());
+}
+
+void AUEC_Cursor::AddInventory(AUEC_ItemAbstract* _item)
+{
+	inventory->Add(_item);
 }
 
 void AUEC_Cursor::Rotate() 

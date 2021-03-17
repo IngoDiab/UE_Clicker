@@ -11,6 +11,7 @@ class UE_CLICKER_API AUEC_ItemAbstract : public AActor
 {
 	GENERATED_BODY()
 
+protected:
 	UPROPERTY(EditAnywhere)
 		int id;
 
@@ -21,7 +22,10 @@ class UE_CLICKER_API AUEC_ItemAbstract : public AActor
 		FString description;
 
 	UPROPERTY(EditAnywhere)
-		int quantity;
+		int quantity = 1;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* mesh = nullptr;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -37,6 +41,8 @@ public:
 
 public: 
 	FORCEINLINE int GetID() { return id; };
+	FORCEINLINE FString GetName() { return name; };
+	FORCEINLINE int GetQuantity() { return quantity; };
 	FORCEINLINE bool IsUnique() { return quantity == 1; };
 	virtual void IncreaseQuantity() PURE_VIRTUAL(AUEC_ItemAbstract::IncreaseQuantity, );
 	virtual void DecreaseQuantity() PURE_VIRTUAL(AUEC_ItemAbstract::DecreaseQuantity, );

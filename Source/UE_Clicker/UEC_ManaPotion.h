@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "UEC_ItemAbstract.h"
-#include "UEC_HealPotion.generated.h"
+#include "UEC_ManaPotion.generated.h"
 
 UCLASS()
-class UE_CLICKER_API AUEC_HealPotion : public AUEC_ItemAbstract
+class UE_CLICKER_API AUEC_ManaPotion : public AUEC_ItemAbstract
 {
 	GENERATED_BODY()
 
@@ -17,7 +17,7 @@ class UE_CLICKER_API AUEC_HealPotion : public AUEC_ItemAbstract
 	
 public:	
 	// Sets default values for this actor's properties
-	AUEC_HealPotion();
+	AUEC_ManaPotion();
 
 protected:
 	// Called when the game starts or when spawned

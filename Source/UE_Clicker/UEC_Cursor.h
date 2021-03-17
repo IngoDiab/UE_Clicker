@@ -134,8 +134,9 @@ public:
 	void SpawnFXOnClick();
 	void ShowFXDestination(bool);
 	bool IsAtPos();
-	//void Move();
 	void IDLEtoRUN();
+
+	void AddInventory(class AUEC_ItemAbstract*);
 
 	void Rotate();
 
