@@ -138,7 +138,9 @@ public:
 	void SpawnFXOnClick();
 	void ShowFXDestination(bool);
 	bool IsAtPos();
+
 	void IDLEtoRUN();
+	void TriggerDrinkAnimation();
 
 	void AddInventory(class AUEC_ItemAbstract*);
 	void UseHealPotion();

@@ -59,7 +59,11 @@ void AUEC_ManaPotion::Use()
 	UE_LOG(LogTemp, Warning, TEXT("You used : Mana Potion x1"));
 	APlayerController* _controller = GetPlayerController();
 	if (!_controller) return;
-	IITarget* _player = Cast<IITarget>(_controller->GetPawn());
-	_player->AddMana_Implementation(amountManaRegen);
+	IITarget* _target = Cast<IITarget>(_controller->GetPawn());
+	_target->AddMana_Implementation(amountManaRegen);
+
+	AUEC_Cursor* _player = Cast<AUEC_Cursor>(_controller->GetPawn());
+	if (!_player) return;
+	_player->TriggerDrinkAnimation();
 }
 

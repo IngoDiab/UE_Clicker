@@ -57,7 +57,11 @@ void AUEC_HealPotion::Use()
 	UE_LOG(LogTemp, Warning, TEXT("You used : Healing Potion x1"));
 	APlayerController* _controller = GetPlayerController();
 	if (!_controller) return;
-	IITarget* _player = Cast<IITarget>(_controller->GetPawn());
-	_player->AddLife_Implementation(amountHPRegen);
+	IITarget* _target = Cast<IITarget>(_controller->GetPawn());
+	_target->AddLife_Implementation(amountHPRegen);
+
+	AUEC_Cursor* _player = Cast<AUEC_Cursor>(_controller->GetPawn());
+	if (!_player) return;
+	_player->TriggerDrinkAnimation();
 }
 

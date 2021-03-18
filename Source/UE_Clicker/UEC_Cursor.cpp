@@ -225,6 +225,11 @@ void AUEC_Cursor::IDLEtoRUN()
 	animator->SetVelocity(movement->Velocity.Size());
 }
 
+void AUEC_Cursor::TriggerDrinkAnimation()
+{
+	animator->SetIsDrinking(true);
+}
+
 void AUEC_Cursor::AddInventory(AUEC_ItemAbstract* _item)
 {
 	inventory->Add(_item);
