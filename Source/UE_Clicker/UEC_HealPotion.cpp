@@ -29,7 +29,6 @@ void AUEC_HealPotion::BeginPlay()
 void AUEC_HealPotion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Move();
 }
 
 void AUEC_HealPotion::OnActorBeginOverlapMethod(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -41,11 +40,6 @@ void AUEC_HealPotion::OnActorBeginOverlapMethod(UPrimitiveComponent* OverlappedC
 	UE_LOG(LogTemp, Warning, TEXT("You found : Healing Potion x1"));
 	_player->AddInventory(_potion);
 	_potion->Destroy(true);
-}
-
-void AUEC_HealPotion::Move()
-{
-
 }
 
 void AUEC_HealPotion::IncreaseQuantity()

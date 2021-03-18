@@ -26,6 +26,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* mesh = nullptr;
+
+	UPROPERTY(EditAnywhere)
+		class UParticleSystemComponent* particle = nullptr;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -49,6 +52,8 @@ public:
 	class AUEC_CameraManager* GetCameraManager();
 	class AUEC_FXManager* GetFXManager();
 
+	virtual void Move();
+	virtual void Rotate();
 	virtual void IncreaseQuantity() PURE_VIRTUAL(AUEC_ItemAbstract::IncreaseQuantity, );
 	virtual void DecreaseQuantity() PURE_VIRTUAL(AUEC_ItemAbstract::DecreaseQuantity, );
 	virtual void Use() PURE_VIRTUAL(AUEC_ItemAbstract::Use, );

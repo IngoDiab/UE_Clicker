@@ -55,7 +55,7 @@ void UInventory::Add(AUEC_ItemAbstract* _item)
 	if (!Exists(_item)) 
 	{
 		AUEC_ItemAbstract* _potion = NewObject<AUEC_ItemAbstract>(this, _item->GetClass());
-		allItems.Add(_item->GetID(), _item);
+		allItems.Add(_item->GetID(), _potion);
 	}
 	else 
 	{
