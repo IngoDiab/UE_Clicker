@@ -11,7 +11,10 @@ UInventory::UInventory()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	onInventoryUpdated.AddLambda([this]()
+	{
+		ShowInventory();
+	});
 }
 
 
@@ -62,7 +65,7 @@ void UInventory::Add(AUEC_ItemAbstract* _item)
 		AUEC_ItemAbstract* _itemInInventory = Get(_item->GetID());
 		_itemInInventory->IncreaseQuantity();
 	}
-	ShowInventory();
+	onInventoryUpdated.Broadcast();
 }
 
 AUEC_ItemAbstract* UInventory::Get(int _id)
@@ -77,6 +80,7 @@ void UInventory::Remove(int _id)
 	AUEC_ItemAbstract* _item = Get(_id);
 	if (_item->IsUnique()) allItems.Remove(_id);
 	else _item->DecreaseQuantity();
+	onInventoryUpdated.Broadcast();
 }
 
 void UInventory::Remove(AUEC_ItemAbstract* _item)
@@ -84,6 +88,7 @@ void UInventory::Remove(AUEC_ItemAbstract* _item)
 	if (IsEmpty() || !Exists(_item)) return;
 	if (!_item->IsUnique()) _item->DecreaseQuantity();
 	else allItems.Remove(_item->GetID());
+	onInventoryUpdated.Broadcast();
 }
 
 bool UInventory::Exists(int _id)

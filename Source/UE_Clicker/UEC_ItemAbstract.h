@@ -29,6 +29,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		class UParticleSystemComponent* particle = nullptr;
+
+	DECLARE_EVENT(UInventory, ItemUpdate)
+	ItemUpdate onUpdate;
 	
 public:	
 	// Sets default values for this actor's properties

@@ -17,6 +17,13 @@ class UE_CLICKER_API UInventory : public UActorComponent
 
 	UPROPERTY(EditAnywhere)
 		int maxSlots = 5;
+
+	DECLARE_EVENT(UInventory, ItemAdded)
+	ItemAdded onItemAdded;
+
+	DECLARE_EVENT(UInventory, InventoryUpdated)
+	InventoryUpdated onInventoryUpdated;
+
 public:	
 	// Sets default values for this component's properties
 	UInventory();

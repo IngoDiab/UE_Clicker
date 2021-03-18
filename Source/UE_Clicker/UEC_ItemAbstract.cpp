@@ -18,21 +18,25 @@ AUEC_ItemAbstract::AUEC_ItemAbstract()
 
 	particle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle"));
 	particle->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	onUpdate.AddLambda([this]()
+	{
+		Move();
+		Rotate();
+	});
 }
 
 // Called when the game starts or when spawned
 void AUEC_ItemAbstract::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AUEC_ItemAbstract::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Move();
-	Rotate();
+	onUpdate.Broadcast();
 }
 
 void AUEC_ItemAbstract::Move()
@@ -43,7 +47,6 @@ void AUEC_ItemAbstract::Move()
 
 void AUEC_ItemAbstract::Rotate()
 {
-	//float _rotate = (int)GetWorld()->TimeSeconds * 50 %360;
 	FRotator _rotator = FRotator(0, GetWorld()->TimeSeconds * 50, 0);
 	SetActorRotation(_rotator);
 }
