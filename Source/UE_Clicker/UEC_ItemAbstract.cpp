@@ -2,8 +2,10 @@
 
 #include "UEC_ItemAbstract.h"
 #include "ClickerGM.h"
+#include "UEC_Cursor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 AUEC_ItemAbstract::AUEC_ItemAbstract()
@@ -19,10 +21,15 @@ AUEC_ItemAbstract::AUEC_ItemAbstract()
 	particle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle"));
 	particle->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
+	detectionTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("SphereTrigger"));
+	detectionTrigger->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
 	onUpdate.AddLambda([this]()
 	{
-		Move();
+		if (target) MoveToTarget();
+		else Move();
 		Rotate();
+		if (CanBeAddToInventory()) AddToInventory();
 	});
 }
 
@@ -30,6 +37,8 @@ AUEC_ItemAbstract::AUEC_ItemAbstract()
 void AUEC_ItemAbstract::BeginPlay()
 {
 	Super::BeginPlay();
+	detectionTrigger->OnComponentBeginOverlap.AddDynamic(this, &AUEC_ItemAbstract::DetectPlayerOnOverlap);
+	detectionTrigger->OnComponentEndOverlap.AddDynamic(this, &AUEC_ItemAbstract::LoosePlayer);
 }
 
 // Called every frame
@@ -37,6 +46,33 @@ void AUEC_ItemAbstract::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	onUpdate.Broadcast();
+}
+
+void AUEC_ItemAbstract::DetectPlayerOnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AUEC_Cursor* _player = Cast<AUEC_Cursor>(OtherActor);
+	if (!_player) return;
+	target = OtherActor;
+}
+
+void AUEC_ItemAbstract::LoosePlayer(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	target = nullptr;
+}
+
+void AUEC_ItemAbstract::AddToInventory()
+{
+	AUEC_Cursor* _player = Cast<AUEC_Cursor>(target);
+	if (!_player) return;
+	UE_LOG(LogTemp, Warning, TEXT("You found : Healing Potion x1"));
+	_player->AddInventory(this);
+	Destroy(true);
+}
+
+bool AUEC_ItemAbstract::CanBeAddToInventory()
+{
+	if (!target) return false;
+	return FVector::Distance(GetActorLocation(), target->GetActorLocation()) < distanceToAdd;
 }
 
 void AUEC_ItemAbstract::Move()
@@ -49,6 +85,11 @@ void AUEC_ItemAbstract::Rotate()
 {
 	FRotator _rotator = FRotator(0, GetWorld()->TimeSeconds * 50, 0);
 	SetActorRotation(_rotator);
+}
+
+void AUEC_ItemAbstract::MoveToTarget()
+{
+	SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), target->GetActorLocation(), GetWorld()->DeltaTimeSeconds, speedFollowTarget));
 }
 
 APlayerController* AUEC_ItemAbstract::GetPlayerController()

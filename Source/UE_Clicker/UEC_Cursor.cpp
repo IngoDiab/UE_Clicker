@@ -44,6 +44,8 @@ void AUEC_Cursor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	onPlayerUpdate.Broadcast();
+	RightFootLocation();
+	LeftFootLocation();
 }
 
 // Called to bind functionality to input
@@ -189,6 +191,50 @@ void AUEC_Cursor::AddMana_Implementation(int _mana)
 {
 	if (!stats.canMana) return;
 	stats.mana += _mana;
+}
+
+void AUEC_Cursor::RightFootLocation()
+{
+	if (!skeletalMesh || !animator)return;
+	FVector _currentPos = skeletalMesh->GetSocketLocation(FName("RightFoot"));
+	//UE_LOG(LogTemp, Warning, TEXT("%s"), *_currentPos.ToString());
+	FHitResult _hit;
+	if (GetWorld()->LineTraceSingleByObjectType(_hit, _currentPos, _currentPos - FVector(0, 0, 100), allObjectsHitable)) 
+	{
+		DrawDebugSphere(GetWorld(), _hit.Location, 10, 100, FColor::Red, false, .1f);
+		animator->SetRightFootPos(_hit.Location);
+	}
+}
+
+void AUEC_Cursor::LeftFootLocation()
+{
+	if (!skeletalMesh || !animator)return;
+	FVector _currentPos = skeletalMesh->GetSocketLocation(FName("LeftFoot"));
+	//UE_LOG(LogTemp, Warning, TEXT("%s"), *_currentPos.ToString());
+	FHitResult _hit;
+	if (GetWorld()->LineTraceSingleByObjectType(_hit, _currentPos, _currentPos - FVector(0,0,100), allObjectsHitable)) 
+	{
+		//DrawDebugSphere(GetWorld(), _currentPos, 10, 100, FColor::Green, false, .1f);
+		DrawDebugSphere(GetWorld(), _hit.Location, 10, 100, FColor::Red, false, .1f);
+		//DrawDebugSphere(GetWorld(), _currentPos - FVector(0, 0, 500), 10, 100, FColor::Blue, false, .1f);
+		//DrawDebugLine(GetWorld(), _currentPos, _hit.Location, FColor::Yellow, false, .1f);
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *_hit.Location.ToString());
+		animator->SetLeftFootPos(_hit.Location);
+	}
+}
+
+void AUEC_Cursor::RightKneeLocation()
+{
+	if (!skeletalMesh || !animator)return;
+	FVector _currentPos = skeletalMesh->GetSocketLocation(FName("RightLeg"));
+	animator->SetRightKneePos(_currentPos);
+}
+
+void AUEC_Cursor::LeftKneeLocation()
+{
+	if (!skeletalMesh || !animator)return;
+	FVector _currentPos = skeletalMesh->GetSocketLocation(FName("RightLeg"));
+	animator->SetRightKneePos(_currentPos);
 }
 
 void AUEC_Cursor::ChangeInsideOutside()

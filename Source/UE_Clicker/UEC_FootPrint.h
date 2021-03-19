@@ -4,20 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "UEC_ItemAbstract.h"
-#include "UEC_ManaPotion.generated.h"
+#include "UEC_FootPrint.generated.h"
 
 UCLASS()
-class UE_CLICKER_API AUEC_ManaPotion : public AUEC_ItemAbstract
+class UE_CLICKER_API AUEC_FootPrint : public AActor
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere)
-		int amountManaRegen = 5;
 	
 public:	
 	// Sets default values for this actor's properties
-	AUEC_ManaPotion();
+	AUEC_FootPrint();
+
+	UPROPERTY(EditAnywhere)
+		class UDecalComponent* decal = nullptr;
 
 protected:
 	// Called when the game starts or when spawned
@@ -26,12 +25,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-public:
-	virtual void IncreaseQuantity() override;
-
-	virtual void DecreaseQuantity() override;
-
-	virtual void Use() override;
 
 };

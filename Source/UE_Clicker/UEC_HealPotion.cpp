@@ -2,16 +2,12 @@
 
 #include "UEC_HealPotion.h"
 #include "UEC_Cursor.h"
-#include "Components/SphereComponent.h"
 
 // Sets default values
 AUEC_HealPotion::AUEC_HealPotion()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	sphereTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("SphereTrigger"));
-	sphereTrigger->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	id = 50;
 	name = "Heal Potion";
@@ -22,24 +18,12 @@ AUEC_HealPotion::AUEC_HealPotion()
 void AUEC_HealPotion::BeginPlay()
 {
 	Super::BeginPlay();
-	sphereTrigger->OnComponentBeginOverlap.AddDynamic(this, &AUEC_HealPotion::OnActorBeginOverlapMethod);
 }
 
 // Called every frame
 void AUEC_HealPotion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void AUEC_HealPotion::OnActorBeginOverlapMethod(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	AUEC_Cursor* _player = Cast<AUEC_Cursor>(OtherActor);
-	if (!_player) return;
-	AUEC_HealPotion* _potion = Cast<AUEC_HealPotion>(OverlappedComponent->GetOwner());
-	if (!_potion) return;
-	UE_LOG(LogTemp, Warning, TEXT("You found : Healing Potion x1"));
-	_player->AddInventory(_potion);
-	_potion->Destroy(true);
 }
 
 void AUEC_HealPotion::IncreaseQuantity()

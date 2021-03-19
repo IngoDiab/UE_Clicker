@@ -14,9 +14,6 @@ class UE_CLICKER_API AUEC_HealPotion : public AUEC_ItemAbstract
 
 	UPROPERTY(EditAnywhere)
 		int amountHPRegen = 10;
-
-	UPROPERTY(EditAnywhere)
-		class USphereComponent* sphereTrigger = nullptr;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -29,10 +26,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-public:
-	UFUNCTION()
-		void OnActorBeginOverlapMethod(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 public:
 	virtual void IncreaseQuantity() override;

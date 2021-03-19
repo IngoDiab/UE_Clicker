@@ -158,6 +158,13 @@ public :
 	virtual void AddMana_Implementation(int _mana);
 
 public :
+	void RightFootLocation();
+	void LeftFootLocation();
+
+	void RightKneeLocation();
+	void LeftKneeLocation();
+
+public :
 	void ChangeInsideOutside();
 	void ModifyPlayerCamOffset();
 	FVector GetLastClickPosition();
