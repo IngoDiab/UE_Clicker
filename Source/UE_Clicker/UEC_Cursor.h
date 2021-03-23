@@ -35,13 +35,13 @@ struct UE_CLICKER_API FPlayerStats
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-		float life = 100;
+		int life = 100;
 
 	UPROPERTY(EditAnywhere)
 		bool canHeal = true;
 
 	UPROPERTY(EditAnywhere)
-		float mana = 100;
+		int mana = 100;
 
 	UPROPERTY(EditAnywhere)
 		bool canMana = true;
