@@ -40,7 +40,6 @@ void AUEC_CameraManager::Add(AUEC_Camera* _camera)
 AUEC_Camera* AUEC_CameraManager::Get(int _id)
 {
 	if (!Exists(_id)) return nullptr;
-	UE_LOG(LogTemp, Warning, TEXT("EXIST %i"), _id);
 	return allCameras[_id];
 }
 
@@ -75,10 +74,8 @@ bool AUEC_CameraManager::Exists(AUEC_Camera* _camera)
 
 void AUEC_CameraManager::ModifySettings(int _id, FCameraSettings& _settings)
 {
-	UE_LOG(LogTemp, Warning, TEXT("GET %i"), _id);
 	AUEC_Camera* _camera = Get(_id);
 	if (!_camera) return;
-	UE_LOG(LogTemp, Warning, TEXT("AAAAAA"));
 	_camera->SetCameraSettings(_settings);
 }
 

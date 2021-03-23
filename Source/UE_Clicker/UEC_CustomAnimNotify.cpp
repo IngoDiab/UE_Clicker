@@ -6,5 +6,4 @@
 void UUEC_CustomAnimNotify::Notify(USkeletalMeshComponent* _mesh, UAnimSequenceBase* _animation)
 {
 	Super::Notify(_mesh, _animation);
-	UE_LOG(LogTemp, Warning, TEXT("AAA"));
 }

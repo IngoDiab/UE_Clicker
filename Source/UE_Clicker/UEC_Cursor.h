@@ -55,6 +55,12 @@ class UE_CLICKER_API AUEC_Cursor : public APawn, public IITarget
 {
 	GENERATED_BODY()
 
+	UPROPERTY()
+		float timer = 0;
+
+	UPROPERTY()
+		float maxTimer = .1f;
+
 #pragma region Player
 	UPROPERTY(EditAnywhere, Category = "Player | Feedback")
 		int id = 0;
@@ -101,14 +107,14 @@ class UE_CLICKER_API AUEC_Cursor : public APawn, public IITarget
 	UPROPERTY()
 		FVector lastClickPosition = FVector::ZeroVector;
 
+	DECLARE_EVENT(AUEC_Cursor, PlayerDelayedInit)
+	PlayerDelayedInit onPlayerDelayedInit;
+
 	DECLARE_EVENT(AUEC_Cursor, PlayerUpdate)
 	PlayerUpdate onPlayerUpdate;
 
 	DECLARE_EVENT(AUEC_Cursor, PlayerAtPos)
 	PlayerAtPos onPlayerAtPos;
-
-	DECLARE_EVENT(AUEC_Cursor, PlayerMoving)
-	PlayerMoving onPlayerMoving;
 
 public:
 	// Sets default values for this pawn's properties
@@ -117,7 +123,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -127,11 +132,16 @@ public:
 
 public:
 	APlayerController* GetPlayerController();
+	class AUEC_HUD* GetHUD();
 	class AUEC_CameraManager* GetCameraManager();
 	class AUEC_FXManager* GetFXManager();
 
+	UFUNCTION()
+	void DelayedInit();
+
 	void InitPlayer();
 	void InitMecanim();
+	void UpdateUIBar();
 	void CreatePlayerCamera();
 	void EnablePlayerCamera();
 	void Click();

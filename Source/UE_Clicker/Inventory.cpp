@@ -2,7 +2,12 @@
 
 
 #include "Inventory.h"
+
 #include "UEC_ItemAbstract.h"
+
+#include "UEC_HUD.h"
+
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values for this component's properties
 UInventory::UInventory()
@@ -11,8 +16,14 @@ UInventory::UInventory()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	onDelayedInit.AddLambda([this]()
+	{
+		UpdateInventory();
+	});
+	
 	onInventoryUpdated.AddLambda([this]()
 	{
+		UpdateInventory();
 		ShowInventory();
 	});
 }
@@ -22,11 +33,8 @@ UInventory::UInventory()
 void UInventory::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
+	InitInventory();
 }
-
 
 // Called every frame
 void UInventory::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -36,6 +44,34 @@ void UInventory::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	// ...
 }
 
+APlayerController* UInventory::GetPlayerController()
+{
+	return GetWorld()->GetFirstPlayerController();
+}
+
+AUEC_HUD* UInventory::GetHUD()
+{
+	APlayerController* _controller = GetPlayerController();
+	if (!_controller) return nullptr;
+	AUEC_HUD* _hud = Cast<AUEC_HUD>(_controller->GetHUD());
+	return _hud;
+}
+
+void UInventory::InitInventory()
+{
+	FLatentActionInfo _delayMethod = FLatentActionInfo();
+	_delayMethod.CallbackTarget = this;
+	_delayMethod.ExecutionFunction = "DelayedInit";
+	_delayMethod.Linkage = 0;
+	_delayMethod.UUID = 0;
+	UKismetSystemLibrary::Delay(GetWorld(), .01f, _delayMethod);
+}
+
+void UInventory::DelayedInit()
+{
+	onDelayedInit.Broadcast();
+}
+
 void UInventory::ShowInventory()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Your Inventory :"));
@@ -43,6 +79,25 @@ void UInventory::ShowInventory()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s x%i"), *_item.Value->GetName(), _item.Value->GetQuantity());
 	}
+}
+
+void UInventory::UpdateInventory()
+{
+	AUEC_HUD* _hud = GetHUD();
+	if (!_hud) return;
+
+	AUEC_ItemAbstract* _healPotion = Get(50);
+	float _nbLifePotion = 0;
+	if (_healPotion) _nbLifePotion = _healPotion->GetQuantity();
+	else _nbLifePotion = 0;
+
+
+	AUEC_ItemAbstract* _manaPotion = Get(51);
+	float _nbManaPotion = 0;
+	if (_manaPotion) _nbManaPotion = _manaPotion->GetQuantity();
+	else _nbManaPotion = 0;
+
+	_hud->UpdateInventoryHUD(_nbLifePotion, _nbManaPotion);
 }
 
 void UInventory::UseItem(int _id)

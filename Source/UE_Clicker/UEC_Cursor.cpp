@@ -1,16 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "UEC_Cursor.h"
+
 #include "PlayerAnimInstance.h"
 #include "ClickerGM.h"
+
 #include "Inventory.h"
-//#include "UEC_ItemAbstract.h"
-//#include "UEC_HealPotion.h"
+#include "UEC_HUD.h"
 #include "UEC_AIController.h"
+
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Components/CapsuleComponent.h"
+
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
@@ -67,6 +71,14 @@ APlayerController* AUEC_Cursor::GetPlayerController()
 	return GetWorld()->GetFirstPlayerController();
 }
 
+AUEC_HUD* AUEC_Cursor::GetHUD()
+{
+	APlayerController* _controller = GetPlayerController();
+	if (!_controller) return nullptr;
+	AUEC_HUD* _hud = Cast<AUEC_HUD>(_controller->GetHUD());
+	return _hud;
+}
+
 AUEC_CameraManager* AUEC_Cursor::GetCameraManager()
 {
 	AClickerGM* _gamemode = GetWorld()->GetAuthGameMode<AClickerGM>();
@@ -81,6 +93,13 @@ AUEC_FXManager* AUEC_Cursor::GetFXManager()
 	return _gamemode->GetFXManager();
 }
 
+void AUEC_Cursor::DelayedInit()
+{
+	AUEC_HUD* _hud = GetHUD();
+	if (!_hud) return;
+	onPlayerDelayedInit.Broadcast();
+}
+
 void AUEC_Cursor::InitPlayer()
 {
 	//INITIALIZE POSITION TO GO TO ACTUAL POSITION
@@ -93,23 +112,29 @@ void AUEC_Cursor::InitPlayer()
 	CreatePlayerCamera();
 	//EnablePlayerCamera();
 
+	FLatentActionInfo _delayMethod = FLatentActionInfo();
+	_delayMethod.CallbackTarget = this;
+	_delayMethod.ExecutionFunction = "DelayedInit";
+	_delayMethod.Linkage = 0;
+	_delayMethod.UUID = 0;
+	UKismetSystemLibrary::Delay(GetWorld(), .01f, _delayMethod);
+
 	//ADD MOVE & ROTATE TO UPDATE EVENT
 	onPlayerUpdate.AddLambda([this]() 
 	{
 		IDLEtoRUN();
-		Rotate();
+		//Rotate();
 		onPlayerAtPos.Broadcast();
+	});
+	
+	onPlayerDelayedInit.AddLambda([this]() 
+	{
+		UpdateUIBar();
 	});
 
 	onPlayerAtPos.AddLambda([this]()
 	{
-		//IDLEtoRUN(false);
 		if(IsAtPos())ShowFXDestination(false);
-	});
-
-	onPlayerMoving.AddLambda([this]()
-	{
-		//IDLEtoRUN(true);
 	});
 }
 
@@ -117,6 +142,14 @@ void AUEC_Cursor::InitMecanim()
 {
 	if (!skeletalMesh) return;
 	animator = Cast<UPlayerAnimInstance>(skeletalMesh->GetAnimInstance());
+}
+
+void AUEC_Cursor::UpdateUIBar()
+{
+	//INIT UI
+	AUEC_HUD* _hud = GetHUD();
+	if (!_hud) return;
+	_hud->UpdateCharacterHUD(stats.life, stats.mana);
 }
 
 void AUEC_Cursor::CreatePlayerCamera()
@@ -157,11 +190,6 @@ void AUEC_Cursor::Click()
 	if (!settings.canMove) return;
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetPlayerController(), lastClickPosition);
 
-
-	/*AUEC_HealPotion* _potion = NewObject<AUEC_HealPotion>(this);
-	if(_potion)
-		inventory->Add(_potion);*/
-
 	SpawnFXOnClick();
 }
 
@@ -185,23 +213,25 @@ void AUEC_Cursor::AddLife_Implementation(int _life)
 {
 	if (!stats.canHeal) return;
 	stats.life += _life;
+	if (stats.life > 100) stats.life = 100;
+	UpdateUIBar();
 }
 
 void AUEC_Cursor::AddMana_Implementation(int _mana)
 {
 	if (!stats.canMana) return;
 	stats.mana += _mana;
+	if (stats.mana > 100) stats.mana = 100;
+	UpdateUIBar();
 }
 
 void AUEC_Cursor::RightFootLocation()
 {
 	if (!skeletalMesh || !animator)return;
 	FVector _currentPos = skeletalMesh->GetSocketLocation(FName("RightFoot"));
-	//UE_LOG(LogTemp, Warning, TEXT("%s"), *_currentPos.ToString());
 	FHitResult _hit;
 	if (GetWorld()->LineTraceSingleByObjectType(_hit, _currentPos, _currentPos - FVector(0, 0, 100), allObjectsHitable)) 
 	{
-		DrawDebugSphere(GetWorld(), _hit.Location, 10, 100, FColor::Red, false, .1f);
 		animator->SetRightFootPos(_hit.Location);
 	}
 }
@@ -210,15 +240,9 @@ void AUEC_Cursor::LeftFootLocation()
 {
 	if (!skeletalMesh || !animator)return;
 	FVector _currentPos = skeletalMesh->GetSocketLocation(FName("LeftFoot"));
-	//UE_LOG(LogTemp, Warning, TEXT("%s"), *_currentPos.ToString());
 	FHitResult _hit;
 	if (GetWorld()->LineTraceSingleByObjectType(_hit, _currentPos, _currentPos - FVector(0,0,100), allObjectsHitable)) 
 	{
-		//DrawDebugSphere(GetWorld(), _currentPos, 10, 100, FColor::Green, false, .1f);
-		DrawDebugSphere(GetWorld(), _hit.Location, 10, 100, FColor::Red, false, .1f);
-		//DrawDebugSphere(GetWorld(), _currentPos - FVector(0, 0, 500), 10, 100, FColor::Blue, false, .1f);
-		//DrawDebugLine(GetWorld(), _currentPos, _hit.Location, FColor::Yellow, false, .1f);
-		//UE_LOG(LogTemp, Warning, TEXT("%s"), *_hit.Location.ToString());
 		animator->SetLeftFootPos(_hit.Location);
 	}
 }

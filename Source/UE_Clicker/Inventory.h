@@ -21,6 +21,9 @@ class UE_CLICKER_API UInventory : public UActorComponent
 	DECLARE_EVENT(UInventory, ItemAdded)
 	ItemAdded onItemAdded;
 
+	DECLARE_EVENT(UInventory, DelayedInit)
+	DelayedInit onDelayedInit;
+
 	DECLARE_EVENT(UInventory, InventoryUpdated)
 	InventoryUpdated onInventoryUpdated;
 
@@ -38,7 +41,16 @@ public:
 
 public :
 
+	APlayerController* GetPlayerController();
+	class AUEC_HUD* GetHUD();
+
+	void InitInventory();
+
+	UFUNCTION()
+	void DelayedInit();
+
 	void ShowInventory();
+	void UpdateInventory();
 	void UseItem(int _id);
 
 	void Add(AUEC_ItemAbstract*);

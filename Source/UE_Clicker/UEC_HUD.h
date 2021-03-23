@@ -19,9 +19,18 @@ class UE_CLICKER_API AUEC_HUD : public AHUD
 
 	UPROPERTY(EditAnywhere)
 		UUEC_UI* widget = nullptr;
+
+	UPROPERTY(EditAnywhere)
+		bool isLoaded = false;
 	
 public:
+	virtual void PostInitProperties() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	void InitHUD();
+	void UpdateCharacterHUD(int _life, int _mana);
+	void UpdateInventoryHUD(int _nbPotionLife, int _nbPotionMana);
+
+public:
+	FORCEINLINE bool IsLoaded() { return isLoaded; };
 };

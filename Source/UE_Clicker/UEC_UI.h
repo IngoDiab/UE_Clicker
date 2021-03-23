@@ -29,7 +29,16 @@ public:
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 			UTextBlock* mana = nullptr;
 
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+			UTextBlock* numManaPotion = nullptr;
+		
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+			UTextBlock* numLifePotion = nullptr;
+
 public:
 	void UpdateLife(int _life);
-	void UpdateMana(float _mana);
+	void UpdateMana(int _mana);
+
+	void UpdateNumberLifePotion(int _number);
+	void UpdateNumberManaPotion(int _number);
 };

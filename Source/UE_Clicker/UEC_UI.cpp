@@ -15,7 +15,7 @@ void UUEC_UI::UpdateLife(int _life)
 	}
 }
 
-void UUEC_UI::UpdateMana(float _mana)
+void UUEC_UI::UpdateMana(int _mana)
 {
 	if (manaBar)
 	{
@@ -25,4 +25,16 @@ void UUEC_UI::UpdateMana(float _mana)
 	{
 		mana->SetText(FText::FromString(FString::FromInt(_mana).AppendChar(TCHAR('%'))));
 	}
+}
+
+void UUEC_UI::UpdateNumberLifePotion(int _number)
+{
+	if (!numLifePotion) return;
+	numLifePotion->SetText(FText::FromString(FString::FromInt(_number)));
+}
+
+void UUEC_UI::UpdateNumberManaPotion(int _number)
+{
+	if (!numManaPotion) return;
+	numManaPotion->SetText(FText::FromString(FString::FromInt(_number)));
 }
