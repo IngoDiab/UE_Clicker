@@ -167,6 +167,14 @@ public :
 		void AddMana(int _mana);
 	virtual void AddMana_Implementation(int _mana);
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void LooseLife(int _life);
+	virtual void LooseLife_Implementation(int _life);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void LooseMana(int _mana);
+	virtual void LooseMana_Implementation(int _mana);
+
 public :
 	void RightFootLocation();
 	void LeftFootLocation();

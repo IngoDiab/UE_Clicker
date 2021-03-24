@@ -123,7 +123,7 @@ void AUEC_Cursor::InitPlayer()
 	onPlayerUpdate.AddLambda([this]() 
 	{
 		IDLEtoRUN();
-		//Rotate();
+		Rotate();
 		onPlayerAtPos.Broadcast();
 	});
 	
@@ -222,6 +222,20 @@ void AUEC_Cursor::AddMana_Implementation(int _mana)
 	if (!stats.canMana) return;
 	stats.mana += _mana;
 	if (stats.mana > 100) stats.mana = 100;
+	UpdateUIBar();
+}
+
+void AUEC_Cursor::LooseLife_Implementation(int _life)
+{
+	stats.life -= _life;
+	if (stats.life < 0) stats.life = 0;
+	UpdateUIBar();
+}
+
+void AUEC_Cursor::LooseMana_Implementation(int _mana)
+{
+	stats.mana -= _mana;
+	if (stats.mana < 0) stats.mana = 0;
 	UpdateUIBar();
 }
 

@@ -27,4 +27,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 		void AddMana(int _mana);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void LooseLife(int _life);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void LooseMana(int _mana);
 };
